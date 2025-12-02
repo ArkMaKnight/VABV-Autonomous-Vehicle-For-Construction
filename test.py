@@ -1,0 +1,1 @@
+print("Características de Torch")
