@@ -1,1 +1,0 @@
-print("Características de Torch")
