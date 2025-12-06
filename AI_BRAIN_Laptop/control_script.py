@@ -19,7 +19,7 @@ project = rf.workspace("...").project("...")
 dataset = project.version(1).download("yolov8")
 
 # 3. Entrenar el Modelo
-if __name__ = '__main__':
+if __name__ == '__main__':
     model = YOLO("yolov8n.pt")
     print("Comienza el Entrenamiento 🚗...")
 
@@ -32,6 +32,6 @@ if __name__ = '__main__':
         name='modelo_tesiproject_v1'
     )
 
-    print("Felicidades Dre4m Te4m, es una niña...")
-    print("Alto no... Eso no era, el carrito ha funcionado 🚗")
-    print("Finalizado.")
+print("Felicidades Dre4m Te4m, es una niña...")
+print("Alto no... Eso no era, el carrito ha funcionado 🚗")
+print("Finalizado.")
