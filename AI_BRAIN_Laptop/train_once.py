@@ -1,8 +1,12 @@
 from ultralytics import YOLO
 from roboflow import Roboflow
+from dotenv import load_dotenv
+import os
 import torch
 
 tarjeta_grafica = 0
+load_dotenv()
+ROBOFLOW_KEY = os.getenv("ROBOFLOW_KEY")
 # Verificamos que use RTX4060
 print("¿CUDA disponible?:", torch.cuda.is_available())
 
@@ -14,7 +18,7 @@ if torch.cuda.is_available():
 else:
     print("Sigue saliendo CPU... avísame si pasa esto.")
 
-rf = Roboflow(api_key="")
+rf = Roboflow(api_key=ROBOFLOW_KEY)
 project = rf.workspace("...").project("...")
 dataset = project.version(1).download("yolov8")
 
@@ -28,7 +32,7 @@ if __name__ == '__main__':
         epochs=50,
         imgsz=640,
         device = tarjeta_grafica,
-        batch=16
+        batch=16,
         name='modelo_tesiproject_v1'
     )
 

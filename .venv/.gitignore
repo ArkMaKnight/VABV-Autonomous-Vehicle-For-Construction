@@ -1,0 +1,17 @@
+.venv/
+venv/
+env/
+ENV/
+Lib/
+Scripts
+share
+pyvenv.cfg
+.env
+dataset/
+runs/ 
+
+__pycache__/
+*.sqlite3
+*.db
+
+.DB_STORE
