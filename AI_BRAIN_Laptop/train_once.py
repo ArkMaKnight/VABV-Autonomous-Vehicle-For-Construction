@@ -4,11 +4,21 @@ from dotenv import load_dotenv
 import os
 import torch
 
+# Configuraciones 
+workspace = "tesi-intelligent-autonomous-smart-vehicle-for-construction"
+project = "epp-autonomous-vehicle-construction"
 tarjeta_grafica = 0
+
+
+# Carga de KEY de Roboflow (*)
 load_dotenv()
 ROBOFLOW_KEY = os.getenv("ROBOFLOW_KEY")
+
 # Verificamos que use RTX4060
 print("¿CUDA disponible?:", torch.cuda.is_available())
+
+if not ROBOFLOW_KEY: 
+    print("API no encontrada. Descartando cambios...")
 
 #2: Descargar el Dataset para Carrito :) 
 
@@ -19,7 +29,7 @@ else:
     print("Sigue saliendo CPU... avísame si pasa esto.")
 
 rf = Roboflow(api_key=ROBOFLOW_KEY)
-project = rf.workspace("...").project("...")
+project = rf.workspace(workspace).project(project)
 dataset = project.version(1).download("yolov8")
 
 # 3. Entrenar el Modelo
@@ -36,6 +46,7 @@ if __name__ == '__main__':
         name='modelo_tesiproject_v1'
     )
 
-print("Felicidades Dre4m Te4m, es una niña...")
-print("Alto no... Eso no era, el carrito ha funcionado 🚗")
-print("Finalizado.")
+    print("Felicidades Dre4m Te4m, es una niña...")
+    print("Alto no... Eso no era, el carrito ha funcionado 🚗")
+    print("Finalizado.")
+
