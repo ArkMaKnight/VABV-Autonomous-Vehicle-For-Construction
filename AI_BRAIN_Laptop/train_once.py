@@ -22,10 +22,11 @@ if iteraciones == 0:
         print("¡ÉXITO! Ahora usando:", torch.cuda.get_device_name(tarjeta_grafica))
         print("Versión de CUDA:", torch.version.cuda)
     else:
-        print("Sigue saliendo CPU... avísame si pasa esto.")
+        print("Sigue saliendo CPU... 💻 No podemos entrenar así")
     if not ROBOFLOW_KEY: 
         print("API no encontrada. Descartando cambios...")
 
+iteraciones+=1
 print("Número de iteraciones: ", iteraciones)
 #2: Descargar el Dataset para Carrito :) 
 
