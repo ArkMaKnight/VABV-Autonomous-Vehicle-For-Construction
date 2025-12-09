@@ -8,6 +8,8 @@ import torch
 iteraciones = 0
 workspace = "tesi-intelligent-autonomous-smart-vehicle-for-construction"
 project = "epp-autonomous-vehicle-construction"
+version_download = "yolov8"
+version_project = 2
 tarjeta_grafica = 0
 
 
@@ -32,7 +34,7 @@ print("Número de iteraciones: ", iteraciones)
 
 rf = Roboflow(api_key=ROBOFLOW_KEY)
 project = rf.workspace(workspace).project(project)
-dataset = project.version(1).download("yolov8")
+dataset = project.version(version_project).download(version_download)
 
 # 3. Entrenar el Modelo
     #batch=16 -> En caso, se tenga más memoria RAM.
