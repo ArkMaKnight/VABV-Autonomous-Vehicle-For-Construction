@@ -9,9 +9,8 @@ iteraciones = 0
 workspace = "tesi-intelligent-autonomous-smart-vehicle-for-construction"
 project = "epp-autonomous-vehicle-construction"
 version_download = "yolov8"
-version_project = 2
+version_project = 3
 tarjeta_grafica = 0
-
 
 # Carga de KEY de Roboflow (*)
 load_dotenv()
