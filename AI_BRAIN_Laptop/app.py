@@ -30,14 +30,16 @@ def generar_frames():
         count_vehicle = 0
         green_color = (0,255,0)
         blue_color = (255,0,0)
+        red_color = (0,0,255)
         black_color = (0,0,0)
         white_color = (255,255,255)
         gray_color = (200,200,200)
 
         # Variables a Cambiar
-        success_text = "SEGURIDAD DETECTADA"
-        fail_text = "NO SE DETECTÓ EQUIPOS DE PROTECCIÓN EPP."
+        success_text = "EQUIPOS DE PROTECCIÓN Y DE SEGURIDAD DETECTADA..."
+        fail_text = "NO SE DETECTÓ EQUIPOS DE PROTECCIÓN EPP. - ACTIVANDO ALARMA..."
         permission_personal = gray_color
+        msg_output = ""
 
         for r in results: 
             boxes = r.boxes
@@ -69,9 +71,18 @@ def generar_frames():
 
         if count_people > 0:
             if count_hardhat >= count_people:
-                print("Cascos detectados para todas las personas.")
-                print(success_text)
+                permission_personal = green_color
+                msg = success_text
+                print(msg)
             else:
-                print(permission_personal)
-                print(fail_text)
-    
+                permission_personal = red_color
+                msg = fail_text
+                print(msg)
+
+        cv2.rectangle(frame, (0,0), (650,50), white_color, 1, -1)
+        cv2.putText(frame, msg, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
+
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame_bytes = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r')
