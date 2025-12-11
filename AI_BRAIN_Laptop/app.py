@@ -14,7 +14,7 @@ camera = cv2.VideoCapture(webcam)
 camera.set(3,640)
 camera.set(4,480)
 
-def generar_frames(): 
+def generate_frame(): 
     while True: 
         success, frame = camera.read()
         if not success:
@@ -22,7 +22,7 @@ def generar_frames():
 
         results = model(frame, stream=True, conf=0.5)
 
-        # Estadísticas
+        # Parámetros para manipular xd
 
         count_people = 0
         count_hardhat = 0
@@ -85,4 +85,15 @@ def generar_frames():
         ret, buffer = cv2.imencode('.jpg', frame)
         frame_bytes = buffer.tobytes()
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r')
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(generate_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True)
