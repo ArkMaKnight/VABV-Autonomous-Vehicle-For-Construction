@@ -4,7 +4,7 @@ import cv2
 import math
 
 app  = Flask(__name__)
-model = YOLO('modelos/best.pt')
+model = YOLO('AI_BRAIN_Laptop\modelos\model_best.pt')
 
 classNames=["person", "helmet", "animal", "vest", "object", "vehicle"]
 webcam = 0
@@ -89,7 +89,7 @@ def generate_frame():
         
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 @app.route('/video_feed')
 def video_feed():
