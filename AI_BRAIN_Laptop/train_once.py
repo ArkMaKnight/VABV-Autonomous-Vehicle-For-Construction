@@ -9,7 +9,7 @@ iteraciones = 0
 workspace = "tesi-intelligent-autonomous-smart-vehicle-for-construction"
 project = "epp-autonomous-vehicle-construction"
 version_download = "yolov8"
-version_project = 3
+version_project = 4
 tarjeta_grafica = 0
 
 # Carga de KEY de Roboflow (*)
@@ -20,7 +20,7 @@ if iteraciones == 0:
 # Verificamos que use la tarjeta gráfica asignada RTX4060
     print("¿CUDA disponible?:", torch.cuda.is_available())
     if torch.cuda.is_available():
-        print("¡ÉXITO! Ahora usando:", torch.cuda.get_device_name(tarjeta_grafica))
+        print("¡ÉXITO! Ahora usando:", torch.cuda.get_device_name(device = 0))
         print("Versión de CUDA:", torch.version.cuda)
     else:
         print("Sigue saliendo CPU... 💻 No podemos entrenar así")
