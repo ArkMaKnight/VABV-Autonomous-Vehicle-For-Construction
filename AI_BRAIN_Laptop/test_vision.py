@@ -1,12 +1,25 @@
-from ultralytics import YOLO
+import cv2
 
-# Paso N°01 -> Cargamos el Modelo NANO 
-model = YOLO('yolov8n.pt')
+camera_integrated = 0
 
-# Usar source = 0 es la webcam integrado. Si es con USB es 1 
-# show = true para desplegar nueva ventana
-# Device = 0 fuerza el uso de la tarjeta gráfica
+cap = cv2.VideoCapture(camera_integrated, cv2.CAP_DSHOW)
 
-results = model.predict(source="0", show=True, device="0", stream=True)
-for r in results:
-    pass 
+if not cap.isOpened():
+    print("Error ARTURO en encontrar la cámara", camera_integrated)
+else: 
+    print(f"Cámara {camera_integrated} detectada")
+
+while True: 
+    ret, frame = cap.read()
+    if not ret:
+        print("No se recibe una imagen.")
+        print("Saliendo...")
+        break
+    
+    cv2.imshow('Prueba de cámara', frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows() 
