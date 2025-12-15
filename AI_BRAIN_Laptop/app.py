@@ -10,7 +10,6 @@ if model is not None:
     print("Felicidades, modelo encontrado y cargado.") 
 print("========================================")
 print("Esperando por la cámara...")
-print("========================================")
 
 classNames=["person", "hard_hat", "animal", "vest", "object", "vehicle"]
 webcam = 0
@@ -27,13 +26,16 @@ else:
     print("No puedo hallar la cámara. ArtMa")
 
 def generate_frame(): 
+    frame_count = 0
     while True: 
         success, frame = camera.read()
+        frame_count += 1
         if not success:
-            print("Error en la lectura")
+            print(f"Error en la lectura frame {frame_count}")
             break
 
         frame = cv2.resize(frame, (640,480))
+        print(f"Frame {frame_count}: shape={frame.shape}, min={frame.min()}, max={frame.max()}")
         results = model(frame, stream=True, conf=0.5)
        
         # Parámetros para manipular xd
@@ -99,28 +101,20 @@ def generate_frame():
 
         ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
         if not ret:
-            print("Error al codificar frame")
+            print(f"Error al codificar frame {frame_count}")
             continue
         
         frame_bytes = buffer.tobytes()
+        print(f"Enviando frame {frame_count} bytes={len(frame_bytes)}")
         
-        print("ÚLTIMA PRUEBAAAA, SE ENVÍA LOS FRAMES", frame_bytes)
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + 
+               b'Content-Type: image/jpeg\r\n'
+               b'Content-Length: ' + str(len(frame_bytes)).encode() + b'\r\n\r\n' +
                frame_bytes + b'\r\n')
         
 @app.route('/')
 def index():
-    return '''
-    <!DOCTYPE html>
-    <html>
-    <head><title>Test Cámara 2</title></head>
-    <body style="background: #222; color: white; text-align: center;">
-        <h1>Test Stream Cámara</h1>
-        <img src="/video_feed" width="640" height="480" style="border: 3px solid lime;">
-    </body>
-    </html>
-    '''
+    return render_template("index.html")
 
 @app.route('/video_feed')
 def video_feed():
