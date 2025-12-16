@@ -39,5 +39,8 @@ class RobotController:
     
     def alarm_detector(self):
         return self._send_request("control", "ALARM_ACTIVATED")
-        
+    
+    def slow_speed(self):
+        return self._send_request("control", "SLOW")
+    
 

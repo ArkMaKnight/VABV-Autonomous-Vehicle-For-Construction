@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response
 from ultralytics import YOLO
 from dotenv import load_dotenv
 from robot_controller import RobotController
+from colors_detection import colorsDetections 
 import cv2, time
 
 print("========================================")
@@ -54,17 +55,15 @@ def generate_frame():
         count_hardhat = 0
         count_vest = 0
         count_vehicle = 0
-        green_color = (0,255,0)
-        blue_color = (255,0,0)
-        red_color = (0,0,255)
-        black_color = (0,0,0)
-        white_color = (255,255,255)
-        gray_color = (200,200,200)
+        count_objects = 0
+        detect_objects = True
+        detect_stop = False
 
         # Variables a Cambiar
         success_text = "EQUIPOS DE PROTECCIÓN Y DE SEGURIDAD DETECTADA..."
         fail_text = "NO SE DETECTÓ EQUIPOS DE PROTECCIÓN EPP. - ACTIVANDO ALARMA..."
-        permission_personal = gray_color
+        stop_text = "SE DETECTÓ SEÑAL DE PARE. PARANDO VEHÍCULO..."
+        permission_personal = colorsDetections.gray_color
         msg_output = "NO DETECTADO"
 
         for r in results: 
@@ -80,36 +79,56 @@ def generate_frame():
                 match currentClass:
                     case "person":
                         count_people +=1
-                        cv2.rectangle(frame, (x1,y1), (x2,y2), blue_color,2)
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.blue_color,2)
                     case "hard_hat":
                         count_hardhat +=1
-                        cv2.rectangle(frame, (x1,y1), (x2,y2), green_color, 2)
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.green_color, 2)
                     case "vest":
                         count_vest +=1
-                        cv2.rectangle(frame, (x1,y1), (x2,y2), green_color,2)
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.green_color,2)
                     case "vehicle":
                         count_vehicle +=1
-                        cv2.rectangle(frame, (x1,y1), (x2,y2), black_color, 2)
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.black_color, 2)
+                    case "stop_sign":
+                        detect_stop = True
+                        cv2.rectangle(frame, (x1, y1), (x2,y2), colorsDetections.red_color, 2)
+                    case "objects":
+                        count_objects +=1
+                        cv2.rectangle(frame, (x1,y1), (y1,y2), colorsDetections.purple_color, 2)
                     case _: 
                         print("Lo siento, clase no especiifcada", currentClass)
 
-                cv2.putText(frame, f'{currentClass} {conf}', (x1, y1-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.5, white_color, 2)
+                cv2.putText(frame, f'{currentClass} {conf}', (x1, y1-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.5, colorsDetections.white_color, 2)
 
-        # Dibujar mensaje después de procesar todas las detecciones
+
         if count_people > 0:
             if count_hardhat >= count_people and count_vest >= count_people:
-                permission_personal = green_color
+                permission_personal = colorsDetections.green_color
                 msg_output = success_text
                 print(msg_output)
-                robot.forward()
+                robot.slow_speed()
+            
+                if detect_stop: 
+                    robot.stop()  
+                    msg_output = stop_text  
+                else: 
+                    robot.slow_speed()
             else:
-                permission_personal = red_color
+                permission_personal = colorsDetections.red_color
                 msg_output = fail_text
                 print(msg_output)
                 robot.stop()
                 robot.alarm_detector()
+        else: 
+            print("ZONA DESPEJADA.")
+            robot.forward()
+            if detect_objects:
+                robot.stop()
+                print("Fin de la vía")
+                print("Esperando por más instrucciones...")
 
-        cv2.rectangle(frame, (0,0), (650,50), white_color, -1)
+
+        cv2.rectangle(frame, (0,0), (650,50), colorsDetections.white_color, -1)
         cv2.putText(frame, msg_output, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
 
 
