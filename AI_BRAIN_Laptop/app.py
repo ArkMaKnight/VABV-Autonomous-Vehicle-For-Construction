@@ -1,17 +1,28 @@
 from flask import Flask, render_template, Response
 from ultralytics import YOLO
-import cv2, math
+from dotenv import load_dotenv
+from robot_controller import RobotController
+import cv2, time
 
 print("========================================")
+print("Inicializando controlador...")
+try: 
+    robot = RobotController()
+    print("Controlador Inicializado.")  
+except Exception as e: 
+    print("Error al cargar el controlador: ", e)
+    robot = None
+print("========================================")
+
 print("Carga de modelo YOLO de Roboflow...")
 app  = Flask(__name__)
 model = YOLO(r'AI_BRAIN_Laptop\modelos\model_best.pt')
+load_dotenv()
 if model is not None:
     print("Felicidades, modelo encontrado y cargado.") 
 print("========================================")
 print("Esperando por la cámara...")
 
-classNames=["person", "hard_hat", "animal", "vest", "object", "vehicle"]
 webcam = 0
 esp32 = 1
 
@@ -90,10 +101,13 @@ def generate_frame():
                 permission_personal = green_color
                 msg_output = success_text
                 print(msg_output)
+                robot.forward()
             else:
                 permission_personal = red_color
                 msg_output = fail_text
                 print(msg_output)
+                robot.stop()
+                robot.alarm_detector()
 
         cv2.rectangle(frame, (0,0), (650,50), white_color, -1)
         cv2.putText(frame, msg_output, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
@@ -111,7 +125,8 @@ def generate_frame():
                b'Content-Type: image/jpeg\r\n'
                b'Content-Length: ' + str(len(frame_bytes)).encode() + b'\r\n\r\n' +
                frame_bytes + b'\r\n')
-        
+
+
 @app.route('/')
 def index():
     return render_template("index.html")
