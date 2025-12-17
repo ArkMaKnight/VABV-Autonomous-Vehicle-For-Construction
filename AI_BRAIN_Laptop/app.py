@@ -5,7 +5,7 @@ from robot_controller import RobotController
 from colors_detection import colorsDetections 
 import cv2
 
-
+load_dotenv()
 print("========================================")
 print("Inicializando controlador...")
 try: 
@@ -19,7 +19,7 @@ print("========================================")
 print("Carga de modelo YOLO de Roboflow...")
 app  = Flask(__name__)
 model = YOLO(r'AI_BRAIN_Laptop\modelos\model_best.pt')
-load_dotenv()
+
 if model is not None:
     print("Felicidades, modelo encontrado y cargado.") 
 print("========================================")
@@ -122,7 +122,7 @@ def generate_frame():
                 robot.alarm_detector()
         else: 
             print("ZONA DESPEJADA.")
-            # robot.forward()
+            robot.forward()
             if detect_objects:
                 robot.stop()
                 print("Fin de la vía")

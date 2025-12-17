@@ -17,7 +17,7 @@ class RobotController:
             "auth": self.api_key
         }
         try: 
-            response = requests.post(url, json = payload, timeout= 0.4)
+            response = requests.post(url, json = payload, timeout= 0.5)
             if response.status_code == 200:
                 print("Ejecución realizada. Correcto")
                 return True
@@ -52,4 +52,5 @@ class RobotController:
     def slow_speed(self):
         return self._send_request("control", "SLOW")
     
+
 
