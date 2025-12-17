@@ -1,21 +1,21 @@
 import requests
-import os
+import os, time
+import threading
 
 class RobotController:
     def __init__(self):
         self.base_url = os.getenv("ESP32_IP")
         self.api_key = os.getenv("API_KEY")
-
+        self.last_send = 0
+        
         if not self.base_url or not self.api_key:
             raise ValueError("Instancias no implementadas.")
-    
-    def _send_request(self, endpoint, command): 
+    def _send_background(self, endpoint, command): 
         url = f"{self.base_url}/{endpoint}"
         payload = {
             "action": command,
             "auth": self.api_key
         }
-
         try: 
             response = requests.post(url, json = payload, timeout= 0.4)
             if response.status_code == 200:
@@ -24,12 +24,21 @@ class RobotController:
             else: 
                 print("Ejecución rechazada. ")
                 return False
-            
         except requests.exceptions.Timeout:
-            print(f"Sin respuesta de robot. {TimeoutError}")
+            print(f"Sin respuesta de robot. {command}")
         except Exception as e: 
             print(f"Hubo un error, error detectado: {e}")
         return False
+    
+    def _send_request(self, endpoint, command): 
+        if time.time() - self.last_send < 0.5:
+            return False
+
+        self.last_send = time.time()
+        thread = threading.Thread(target=self._send_background, args=(endpoint, command), daemon= True)
+        thread.start()
+
+        return True
 
     def stop(self):
         return self._send_request("control", "STOP")

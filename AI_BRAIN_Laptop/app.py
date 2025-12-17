@@ -3,7 +3,8 @@ from ultralytics import YOLO
 from dotenv import load_dotenv
 from robot_controller import RobotController
 from colors_detection import colorsDetections 
-import cv2, time
+import cv2
+
 
 print("========================================")
 print("Inicializando controlador...")
@@ -46,9 +47,7 @@ def generate_frame():
             print(f"Error en la lectura frame {frame_count}")
             break
 
-        frame = cv2.resize(frame, (640,480))
-        print(f"Frame {frame_count}: shape={frame.shape}, min={frame.min()}, max={frame.max()}")
-        results = model(frame, stream=True, conf=0.5)
+        results = model(frame, stream=True, conf=0.5, verbose = False)
        
         # Parámetros para manipular xd
         count_people = 0
@@ -56,7 +55,7 @@ def generate_frame():
         count_vest = 0
         count_vehicle = 0
         count_objects = 0
-        detect_objects = True
+        detect_objects = False
         detect_stop = False
 
         # Variables a Cambiar
@@ -94,7 +93,8 @@ def generate_frame():
                         cv2.rectangle(frame, (x1, y1), (x2,y2), colorsDetections.red_color, 2)
                     case "objects":
                         count_objects +=1
-                        cv2.rectangle(frame, (x1,y1), (y1,y2), colorsDetections.purple_color, 2)
+                        detect_objects = True
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.purple_color, 2)
                     case _: 
                         print("Lo siento, clase no especiifcada", currentClass)
 
@@ -112,6 +112,7 @@ def generate_frame():
                     robot.stop()  
                     msg_output = stop_text  
                 else: 
+                    print("Disminuyendo velocidad...")
                     robot.slow_speed()
             else:
                 permission_personal = colorsDetections.red_color
@@ -121,14 +122,14 @@ def generate_frame():
                 robot.alarm_detector()
         else: 
             print("ZONA DESPEJADA.")
-            robot.forward()
+            # robot.forward()
             if detect_objects:
                 robot.stop()
                 print("Fin de la vía")
                 print("Esperando por más instrucciones...")
 
 
-        cv2.rectangle(frame, (0,0), (650,50), colorsDetections.white_color, -1)
+        cv2.rectangle(frame, (0,0), (640,50), colorsDetections.white_color, -1)
         cv2.putText(frame, msg_output, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
 
 
@@ -136,14 +137,11 @@ def generate_frame():
         if not ret:
             print(f"Error al codificar frame {frame_count}")
             continue
-        
-        frame_bytes = buffer.tobytes()
-        print(f"Enviando frame {frame_count} bytes={len(frame_bytes)}")
+
         
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n'
-               b'Content-Length: ' + str(len(frame_bytes)).encode() + b'\r\n\r\n' +
-               frame_bytes + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + 
+               buffer.tobytes() + b'\r\n')
 
 
 @app.route('/')
@@ -155,4 +153,4 @@ def video_feed():
     return Response(generate_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=False)

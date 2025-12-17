@@ -14,7 +14,7 @@ __pycache__/
 *.sqlite3
 *.db
 .DB_STORE
-
+app_clean.py
 epp-autonomous-vehicle-construction-1/
 epp-autonomous-vehicle-construction-2/
 epp-autonomous-vehicle-construction-3/
