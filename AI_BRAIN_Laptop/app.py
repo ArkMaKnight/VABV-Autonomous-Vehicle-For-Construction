@@ -3,7 +3,7 @@ from ultralytics import YOLO
 from dotenv import load_dotenv
 from robot_controller import RobotController
 from colors_detection import colorsDetections 
-import cv2
+import cv2, os
 
 load_dotenv()
 print("========================================")
@@ -26,9 +26,10 @@ print("========================================")
 print("Esperando por la cámara...")
 
 webcam = 0
-esp32 = 1
+esp32 = os.getenv("IP_VIDEO")
 
-camera = cv2.VideoCapture(webcam, cv2.CAP_DSHOW)
+# camera = cv2.VideoCapture(esp32, cv2.CAP_DSHOW)
+camera = cv2.VideoCapture(esp32)
 if camera.isOpened():
     print("Cámara encendida y funcional")
     print("========================================")
