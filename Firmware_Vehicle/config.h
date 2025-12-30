@@ -19,7 +19,7 @@ const char* API_ROBOT = "API_ROBOT";
 #define PIN_WH4 5
 #define PIN_BCK 25
 
-#define SPEED_BASE 200
+#define INIT_SPEED 200
 
 // Pines Cámara (AI THINKER)
 #define PWDN_GPIO_NUM     32

@@ -10,28 +10,6 @@
 
 WebServer server(PORT);
 
-void WiFiConnection() {
-  IPAddress local_ip(ROBOT_IP);
-  IPAddress gateway(GATEWAY);
-  IPAddress subnet(SUBNET);
-
- Serial.print("Conectando a WiFi...");
-  if (!WiFi.config(local_ip, gateway, subnet)) {
-    Serial.println("Error de configuración de RED. Verificar.")
-  } else {
-  Serial.print("WiFi Conectado.");
-  WiFi.begin(WIFI_ID, WIFI_PASS);
-  
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("\n WIFi Conectado.")
-  Serial.print("IP del ROBOT: ");
-  Serial.println(WiFi.localIP());
-  }
-
   void manageControl() {
       if (server.method() != HTTP_POST) {
         server.send(405, "text/plain", "Solo se permite POST");
