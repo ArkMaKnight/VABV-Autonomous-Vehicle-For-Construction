@@ -1,15 +1,18 @@
 #ifndef STREAM_DRIVER_H
 #define STREAM_DRIVER_H
 
-#include "esp_camera.h"
+#include <ArduinoJson.h>
+#include <WebServer.h>      // Librería fácil para Control
+
 #include "esp_http_server.h"
 
-// ===========================================================================
-// DRIVER DE VIDEO MJPEG (Basado en Espressif SDK Examples)
-// Referencia: https://github.com/espressif/esp32-camera
-// Este módulo maneja la memoria y el envío de tramas HTTP.
-// ===========================================================================
+// --- OBJETOS GLOBALES ---
+WebServer server(80);               // Puerto 80 para CONTROL
+httpd_handle_t stream_httpd = NULL; // Puerto 81 para VIDEO
 
+// ==========================================
+// 1. LÓGICA DE VIDEO (MJPEG) - NO TOCAR
+// ==========================================
 #define PART_BOUNDARY "123456789000000000000987654321"
 static const char* _STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char* _STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
@@ -28,21 +31,10 @@ static esp_err_t stream_handler(httpd_req_t *req) {
   while (true) {
     fb = esp_camera_fb_get();
     if (!fb) {
-      Serial.println("Fallo captura camara");
       res = ESP_FAIL;
     } else {
-      if (fb->format != PIXFORMAT_JPEG) {
-        bool jpeg_converted = frame2jpg(fb, 80, &_jpg_buf, &_jpg_buf_len);
-        esp_camera_fb_return(fb);
-        fb = NULL;
-        if (!jpeg_converted) {
-          Serial.println("Fallo compresion JPEG");
-          res = ESP_FAIL;
-        }
-      } else {
-        _jpg_buf_len = fb->len;
-        _jpg_buf = fb->buf;
-      }
+      _jpg_buf_len = fb->len;
+      _jpg_buf = fb->buf;
     }
     if (res == ESP_OK) {
       size_t hlen = snprintf(part_buf, 64, _STREAM_PART, _jpg_buf_len);
@@ -62,46 +54,43 @@ static esp_err_t stream_handler(httpd_req_t *req) {
       free(_jpg_buf);
       _jpg_buf = NULL;
     }
-    if (res != ESP_OK) {
-      break;
-    }
+    if (res != ESP_OK) break;
   }
   return res;
 }
 
-void configureHardwareCamera() {
-  camera_config_t config;
-  config.ledc_channel = LEDC_CHANNEL_0;
-  config.ledc_timer = LEDC_TIMER_0;
-  config.pin_d0 = Y2_GPIO_NUM;
-  config.pin_d1 = Y3_GPIO_NUM;
-  config.pin_d2 = Y4_GPIO_NUM;
-  config.pin_d3 = Y5_GPIO_NUM;
-  config.pin_d4 = Y6_GPIO_NUM;
-  config.pin_d5 = Y7_GPIO_NUM;
-  config.pin_d6 = Y8_GPIO_NUM;
-  config.pin_d7 = Y9_GPIO_NUM;
-  config.pin_xclk = XCLK_GPIO_NUM;
-  config.pin_pclk = PCLK_GPIO_NUM;
-  config.pin_vsync = VSYNC_GPIO_NUM;
-  config.pin_href = HREF_GPIO_NUM;
-  config.pin_sscb_sda = SIOD_GPIO_NUM;
-  config.pin_sscb_scl = SIOC_GPIO_NUM;
-  config.pin_pwdn = PWDN_GPIO_NUM;
-  config.pin_reset = RESET_GPIO_NUM;
-  config.xclk_freq_hz = 20000000;
-  config.pixel_format = PIXFORMAT_JPEG;
-  
+// ==========================================
+// 2. LÓGICA DE CONTROL (JSON)
+// ==========================================
+void handleControl() {
+  server.sendHeader("Access-Control-Allow-Origin", "*"); // Permite conexión externa
 
-  config.frame_size = FRAMESIZE_CIF; // 400x296
-  config.jpeg_quality = 12; 
-  config.fb_count = 2;
-
-  esp_err_t err = esp_camera_init(&config);
-  if (err != ESP_OK) {
-    Serial.printf("Error Hardware Camara: 0x%x\n", err);
+  if (server.method() != HTTP_POST) {
+    server.send(405, "text/plain", "Use metodo POST");
     return;
   }
-}
 
+  String message = server.arg("plain");
+  StaticJsonDocument<200> doc;
+  DeserializationError error = deserializeJson(doc, message);
+
+  if (error) {
+    server.send(400, "application/json", "{\"error\":\"JSON Mal\"}");
+    return;
+  }
+
+  String action = doc["action"];
+
+  if (action == "FORWARD") {
+    forward();
+    server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Avanzando\"}");
+  } 
+  else if (action == "STOP") {
+    stop();
+    server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Detenido\"}");
+  }
+  else {
+    server.send(400, "application/json", "{\"error\":\"Comando desconocido\"}");
+  }
+}
 #endif

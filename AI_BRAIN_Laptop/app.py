@@ -26,18 +26,18 @@ print("========================================")
 print("Esperando por la cámara...")
 
 webcam = 0
-esp32 = os.getenv("IP_VIDEO")
+# esp32 = os.getenv("IP_VIDEO")
+esp32 = "http://10.1.77.15:81/stream"
 
+print(f"Obteniendo conexión desde {esp32}")
 camera = cv2.VideoCapture(esp32, cv2.CAP_FFMPEG)
+
+
 # camera = cv2.VideoCapture(esp32)
-if camera.isOpened():
-    print("Cámara encendida y funcional")
-    print("========================================")
-    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    camera.set(cv2.CAP_PROP_FPS, 30)
+if not camera.isOpened():
+    print("Error no se puede abrir, verifica.")
 else: 
-    print("No puedo hallar la cámara. ArtMa")
+    print("Cámara generada correctamente")
 
 def generate_frame(): 
     frame_count = 0
