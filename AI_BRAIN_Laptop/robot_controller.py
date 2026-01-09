@@ -7,11 +7,12 @@ class RobotController:
         self.base_url = os.getenv("ESP32_IP")
         self.api_key = os.getenv("API_KEY")
         self.last_send = 0
-        
+        self.endpoint = os.getenv("stream")
+
         if not self.base_url or not self.api_key:
             raise ValueError("Instancias no implementadas.")
     def _send_background(self, endpoint, command): 
-        url = f"{self.base_url}/{endpoint}"
+        url = f"{self.base_url}:81/{endpoint}"
         payload = {
             "action": command,
             "auth": self.api_key

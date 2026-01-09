@@ -3,7 +3,7 @@ from ultralytics import YOLO
 from dotenv import load_dotenv
 from robot_controller import RobotController
 from colors_detection import colorsDetections 
-import cv2, os
+import cv2, os, requests
 
 load_dotenv()
 print("========================================")
@@ -28,8 +28,8 @@ print("Esperando por la cámara...")
 webcam = 0
 esp32 = os.getenv("IP_VIDEO")
 
-# camera = cv2.VideoCapture(esp32, cv2.CAP_DSHOW)
-camera = cv2.VideoCapture(esp32)
+camera = cv2.VideoCapture(esp32, cv2.CAP_FFMPEG)
+# camera = cv2.VideoCapture(esp32)
 if camera.isOpened():
     print("Cámara encendida y funcional")
     print("========================================")
@@ -49,7 +49,7 @@ def generate_frame():
             break
 
         results = model(frame, stream=True, conf=0.5, verbose = False)
-       
+
         # Parámetros para manipular xd
         count_people = 0
         count_hardhat = 0
@@ -144,6 +144,14 @@ def generate_frame():
                b'Content-Type: image/jpeg\r\n\r\n' + 
                buffer.tobytes() + b'\r\n')
 
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('w'):
+            robot.forward()
+        elif key == ord('s'):
+            robot.stop()
+        elif key == ord('q'):
+            print("Saliendo...")
+            break
 
 @app.route('/')
 def index():
