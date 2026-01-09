@@ -6,7 +6,7 @@ const char* WIFI_PASS = "CONTRASEÑA";
 
 // Configuración RED IP para robotcito
 #define ROBOT_IP 192,168,100,2
-#define GATEWAY 192,168,1,1
+#define GATEWAY 192,168,100,1
 #define SUBNET 255,255,255,0
 
 const char* API_ROBOT = "API_ROBOT";
