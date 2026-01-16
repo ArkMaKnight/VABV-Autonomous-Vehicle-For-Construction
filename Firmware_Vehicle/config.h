@@ -5,8 +5,11 @@
 const char* WIFI_ID = "EAPIS";
 const char* WIFI_PASS = "e@p1s4k*";
 
-#define ROBOT_IP 192,168,100,50
-#define GATEWAY 192,168,100,1
+// #define ROBOT_IP 192,168,100,50
+// #define GATEWAY 192,168,100,1
+
+#define ROBOT_IP 10,1,77,15
+#define GATEWAY 10,1,77,15
 #define SUBNET 255,255,255,0
 
 const char* API_ROBOT = "TESI_VEHAUT2025WAHFD";
