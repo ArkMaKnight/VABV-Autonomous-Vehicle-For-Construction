@@ -75,13 +75,11 @@ def generate_frame():
         for r in results: 
             boxes = r.boxes
             for box in boxes: 
-                x1, y1, x2, y2 = box.xyxy[0]
-                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-        
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
                 class_id = int(box.cls[0])
                 currentClass = model.names[class_id]
                 conf = round(float(box.conf[0]), 2)
-
+            
                 match currentClass:
                     case "person":
                         count_people +=1
@@ -113,25 +111,24 @@ def generate_frame():
                 permission_personal = colorsDetections.green_color
                 msg_output = success_text
                 print(msg_output)
-                robot.slow_speed()
+                current_action = "SLOW"
             
                 if detect_stop: 
-                    robot.stop()  
+                    current_action = "FORWARD"
                     msg_output = stop_text  
                 else: 
                     print("Disminuyendo velocidad...")
-                    robot.slow_speed()
+                    current_action = "SLOW"
             else:
                 permission_personal = colorsDetections.red_color
                 msg_output = fail_text
                 print(msg_output)
-                robot.stop()
-                robot.alarm_detector()
+                current_action = "STOP"
         else: 
             print("ZONA DESPEJADA.")
-            # robot.forward()
+            current_action = "FORWARD"
             if detect_objects:
-                robot.stop()
+                current_action = "STOP"
                 print("Fin de la vía")
                 print("Esperando por más instrucciones...")
 
@@ -158,6 +155,18 @@ def generate_frame():
         # elif key == ord('q'):
         #     print("Saliendo...")
         #     break
+
+        if robot is not None and current_action != last_command_sent:
+            match current_action:
+                case "STOP":
+                    robot.stop()
+                case "ALARM":
+                    robot.stop()
+                    robot.alarm_detector()
+                case "FORWARD":
+                    robot.forward()
+                case "SLOW":
+                    robot.slow_speed()
 
 @app.route('/')
 def index():
