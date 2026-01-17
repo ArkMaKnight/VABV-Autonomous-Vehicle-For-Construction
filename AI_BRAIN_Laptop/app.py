@@ -3,13 +3,15 @@ from ultralytics import YOLO
 from dotenv import load_dotenv
 from robot_controller import RobotController
 from colors_detection import colorsDetections 
-import cv2, os, requests
-import urllib.request
-import numpy as np
+from ThreadedCamera import ThreadedESP32Camera
+import cv2, os
+import time
 
-load_dotenv()
+
+# 1. Cargamos el controlador de nuestro robotcito
 print("========================================")
-print("Inicializando controlador...")
+print("Inicializando vehículo...")
+load_dotenv()
 
 try: 
     robot = RobotController()
@@ -19,6 +21,8 @@ except Exception as e:
     robot = None
 print("========================================")
 
+
+# 2. Cargamos el modelo de Roboflow entrenado. 
 print("Carga de modelo YOLO de Roboflow...")
 app  = Flask(__name__)
 model = YOLO(r'AI_BRAIN_Laptop\modelos\model_best.pt')
@@ -28,107 +32,26 @@ if model is not None:
 print("========================================")
 print("Esperando por la cámara...")
 
-webcam = 0
+# 3. 
+# webcam = 0
 esp32 = os.getenv("IP_VIDEO")
 
 print(f"Obteniendo conexión desde {esp32}")
 
-# Clase para manejar stream MJPEG del ESP32-CAM
-class ESP32Camera:
-    def __init__(self, url):
-        self.url = url
-        self.stream = None
-        self.bytes_buffer = b''
-        self._opened = False
-        self.max_retries = 3
-    
-    def _connect(self):
-        for attempt in range(self.max_retries):
-            try:
-                print(f"🔄 Conectando a {self.url}... (intento {attempt + 1}/{self.max_retries})")
-                req = urllib.request.Request(self.url)
-                self.stream = urllib.request.urlopen(req, timeout=30)
-                self.bytes_buffer = b''
-                self._opened = True
-                print("✅ Cámara ESP32 conectada correctamente")
-                return True
-            except urllib.error.URLError as e:
-                print(f"⚠️ Intento {attempt + 1} falló: {e}")
-                if attempt < self.max_retries - 1:
-                    import time
-                    time.sleep(1)
-            except Exception as e:
-                print(f"❌ Error conectando a ESP32: {e}")
-                if attempt < self.max_retries - 1:
-                    import time
-                    time.sleep(1)
-        
-        self._opened = False
-        return False
-    
-    def isOpened(self):
-        if not self._opened:
-            return self._connect()
-        return self._opened
-    
-    def read(self):
-        if not self.isOpened():
-            return False, None
-        
-        try:
-            # Leer chunks del stream
-            chunk = self.stream.read(4096)
-            if not chunk:
-                self._opened = False
-                return False, None
-            
-            self.bytes_buffer += chunk
-            
-            # Buscar marcadores JPEG (SOI y EOI)
-            start = self.bytes_buffer.find(b'\xff\xd8')
-            end = self.bytes_buffer.find(b'\xff\xd9')
-            
-            if start != -1 and end != -1 and end > start:
-                jpg = self.bytes_buffer[start:end+2]
-                self.bytes_buffer = self.bytes_buffer[end+2:]
-                
-                # Decodificar JPEG a frame OpenCV
-                frame = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
-                return frame is not None, frame
-            
-            return False, None
-        except Exception as e:
-            print(f"⚠️ Error leyendo frame: {e}, reconectando...")
-            self._opened = False
-            return False, None
-    
-    def release(self):
-        if self.stream:
-            self.stream.close()
-        self._opened = False
-
 # Usar la clase personalizada para ESP32 (conexión lazy)
-camera = ESP32Camera(esp32)
+camera = ThreadedESP32Camera(esp32)
 print("📷 Cámara configurada (conexión al solicitar video)")
 
 def generate_frame(): 
-    frame_count = 0
-    consecutive_errors = 0
-    max_consecutive_errors = 30
+    last_command_sent = ""
     
     while True: 
-        success, frame = camera.read()
-        frame_count += 1
+        frame = camera.read()
         
-        if not success:
-            consecutive_errors += 1
-            if consecutive_errors > max_consecutive_errors:
-                print(f"❌ Demasiados errores consecutivos ({consecutive_errors}), reconectando...")
-                camera._opened = False
-                consecutive_errors = 0
-            continue
-        
-        consecutive_errors = 0  # Reset en frame exitoso
+        if frame is None:
+           print("Esprando vídeo")
+           time.sleep(0.8)
+           continue
 
         results = model(frame, stream=True, conf=0.5, verbose = False)
 
@@ -147,6 +70,7 @@ def generate_frame():
         stop_text = "SE DETECTÓ SEÑAL DE PARE. PARANDO VEHÍCULO..."
         permission_personal = colorsDetections.gray_color
         msg_output = "NO DETECTADO"
+        current_action = "NADA"
 
         for r in results: 
             boxes = r.boxes
@@ -218,7 +142,7 @@ def generate_frame():
 
         ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
         if not ret:
-            print(f"Error al codificar frame {frame_count}")
+            print("Error al codificar")
             continue
 
         
