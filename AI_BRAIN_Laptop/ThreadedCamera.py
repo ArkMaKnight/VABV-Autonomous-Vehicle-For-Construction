@@ -15,7 +15,7 @@ class ThreadedESP32Camera:
         self.thread.daemon = True
         self.thread.start()
     
-    def _do_connect(self):  # Renombrado el método
+    def _do_connect(self):  
         try:
             if self.stream: 
                 try: self.stream.close()
@@ -44,6 +44,11 @@ class ThreadedESP32Camera:
                     continue
 
                 self.bytes_buffer += chunk
+
+                if len(self.bytes_buffer) > 40000:
+                    self.bytes_buffer = b''
+                    continue
+                
                 start = self.bytes_buffer.find(b'\xff\xd8')
                 end = self.bytes_buffer.find(b'\xff\xd9')
 
