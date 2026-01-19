@@ -9,7 +9,7 @@ pyvenv.cfg
 .env
 dataset/
 runs/ 
-
+test/
 __pycache__/
 *.sqlite3
 *.db

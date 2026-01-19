@@ -32,19 +32,21 @@ if model is not None:
 print("========================================")
 print("Esperando por la cámara...")
 
-# 3. 
-# webcam = 0
+# 3. Cámara 
 esp32 = os.getenv("IP_VIDEO")
-
 print(f"Obteniendo conexión desde {esp32}")
-
-# Usar la clase personalizada para ESP32 (conexión lazy)
 camera = ThreadedESP32Camera(esp32)
+
 print("📷 Cámara configurada (conexión al solicitar video)")
 
 def generate_frame(): 
     last_command_sent = ""
-    
+    scan_person = False
+    scan_epp = False
+    timeout_person = 0
+    timeout_epp = 0
+    limit_timeout = 5
+
     while True: 
         frame = camera.read()
         
@@ -107,24 +109,41 @@ def generate_frame():
 
 
         if count_people > 0:
-            if count_hardhat >= count_people and count_vest >= count_people:
-                permission_personal = colorsDetections.green_color
-                msg_output = success_text
-                print(msg_output)
-                current_action = "SLOW"
-            
-                if detect_stop: 
-                    current_action = "FORWARD"
-                    msg_output = stop_text  
-                else: 
-                    print("Disminuyendo velocidad...")
-                    current_action = "SLOW"
-            else:
-                permission_personal = colorsDetections.red_color
-                msg_output = fail_text
-                print(msg_output)
-                current_action = "STOP"
+            scan_person = True
+            timeout_person = 0
+
         else: 
+           timeout_person +=1
+           if timeout_person >= limit_timeout:
+            scan_person = False
+            timeout_person = 0
+
+        if scan_person:
+            if (count_hardhat > 0 and count_vest > 0):
+                scan_epp = True
+
+                if scan_epp:
+                    permission_personal = colorsDetections.green_color
+                    msg_output = success_text
+                    print(msg_output)
+                    current_action = "SLOW"
+            
+                    if detect_stop: 
+                        current_action = "FORWARD"
+                        msg_output = stop_text  
+                    else: 
+                        print("Disminuyendo velocidad...")
+                        current_action = "SLOW"
+                else:
+                    permission_personal = colorsDetections.red_color
+                    msg_output = fail_text
+                    print(msg_output)
+                    current_action = "STOP"
+            else: 
+                timeout_epp += 1
+                if timeout_epp >= limit_timeout:
+                    scan_epp = False
+        else:
             print("ZONA DESPEJADA.")
             current_action = "FORWARD"
             if detect_objects:
@@ -146,15 +165,6 @@ def generate_frame():
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + 
                buffer.tobytes() + b'\r\n')
-
-        # key = cv2.waitKey(1) & 0xFF
-        # if key == ord('w'):
-        #     robot.forward()
-        # elif key == ord('s'):
-        #     robot.stop()
-        # elif key == ord('q'):
-        #     print("Saliendo...")
-        #     break
 
         if robot is not None and current_action != last_command_sent:
             match current_action:
