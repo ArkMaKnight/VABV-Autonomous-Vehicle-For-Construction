@@ -116,11 +116,15 @@ def generate_frame():
            timeout_person +=1
            if timeout_person >= limit_timeout:
             scan_person = False
+            scan_epp = False
             timeout_person = 0
 
         if scan_person:
-            if (count_hardhat > 0 and count_vest > 0):
+            current_frame = (count_hardhat > 0 and count_vest > 0) 
+
+            if (current_frame):
                 scan_epp = True
+                timeout_epp = 0
 
                 if scan_epp:
                     permission_personal = colorsDetections.green_color
@@ -156,27 +160,29 @@ def generate_frame():
         cv2.putText(frame, msg_output, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
 
 
+    
+
+        if robot is not None and current_action != last_command_sent:
+                match current_action:
+                    case "STOP":
+                        robot.stop()
+                    case "ALARM":
+                        robot.stop()
+                        robot.alarm_detector()
+                    case "FORWARD":
+                        robot.forward()
+                    case "SLOW":
+                        robot.slow_speed()
+                
+
         ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
         if not ret:
             print("Error al codificar")
             continue
-
         
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + 
-               buffer.tobytes() + b'\r\n')
-
-        if robot is not None and current_action != last_command_sent:
-            match current_action:
-                case "STOP":
-                    robot.stop()
-                case "ALARM":
-                    robot.stop()
-                    robot.alarm_detector()
-                case "FORWARD":
-                    robot.forward()
-                case "SLOW":
-                    robot.slow_speed()
+        b'Content-Type: image/jpeg\r\n\r\n' + 
+        buffer.tobytes() + b'\r\n')
 
 @app.route('/')
 def index():
