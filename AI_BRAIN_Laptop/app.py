@@ -49,12 +49,12 @@ def generate_frame():
 
     while True: 
         frame = camera.read()
-        
+       
         if frame is None:
            print("Esprando vídeo")
            time.sleep(0.8)
            continue
-
+        frame = cv2.rotate(frame, cv2.ROTATE_180)
         results = model(frame, stream=True, conf=0.5, verbose = False)
 
         # Parámetros para manipular xd
@@ -86,7 +86,7 @@ def generate_frame():
                     case "person":
                         count_people +=1
                         cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.blue_color,2)
-                    case "hard_hat":
+                    case "hard-hat":
                         count_hardhat +=1
                         cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.green_color, 2)
                     case "vest":
@@ -121,32 +121,37 @@ def generate_frame():
 
         if scan_person:
             current_frame = (count_hardhat > 0 and count_vest > 0) 
-
+            print("Hay EPP? : ", scan_epp)
+            print("Hay persona?",scan_person)
+            print("¿Tiene ambos EPP?",current_frame)
+            
             if (current_frame):
                 scan_epp = True
                 timeout_epp = 0
 
-                if scan_epp:
-                    permission_personal = colorsDetections.green_color
-                    msg_output = success_text
-                    print(msg_output)
-                    current_action = "SLOW"
-            
-                    if detect_stop: 
-                        current_action = "FORWARD"
-                        msg_output = stop_text  
-                    else: 
-                        print("Disminuyendo velocidad...")
-                        current_action = "SLOW"
-                else:
-                    permission_personal = colorsDetections.red_color
-                    msg_output = fail_text
-                    print(msg_output)
-                    current_action = "STOP"
             else: 
                 timeout_epp += 1
                 if timeout_epp >= limit_timeout:
                     scan_epp = False
+
+            if scan_epp:
+                permission_personal = colorsDetections.green_color
+                msg_output = success_text
+                print(msg_output)
+                current_action = "SLOW"
+        
+                if detect_stop: 
+                    current_action = "FORWARD"
+                    msg_output = stop_text  
+                else: 
+                    print("Disminuyendo velocidad...")
+                    current_action = "SLOW"
+            else:
+                permission_personal = colorsDetections.red_color
+                msg_output = fail_text
+                print(msg_output)
+                current_action = "STOP"
+
         else:
             print("ZONA DESPEJADA.")
             current_action = "FORWARD"
@@ -155,6 +160,7 @@ def generate_frame():
                 print("Fin de la vía")
                 print("Esperando por más instrucciones...")
 
+       
 
         cv2.rectangle(frame, (0,0), (640,50), colorsDetections.white_color, -1)
         cv2.putText(frame, msg_output, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
@@ -179,7 +185,7 @@ def generate_frame():
         if not ret:
             print("Error al codificar")
             continue
-        
+
         yield (b'--frame\r\n'
         b'Content-Type: image/jpeg\r\n\r\n' + 
         buffer.tobytes() + b'\r\n')
