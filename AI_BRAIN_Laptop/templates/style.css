@@ -1,9 +1,85 @@
 * {
-
+    box-sizing: border-box;
+    background-color: rgb(12, 0, 16);
     margin: 0%;
 }
 
+body {
+    display: grid;
+    min-height: 100vh;
+    grid-template-columns: 200px 1fr 350px;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: 
+        "nav nav nav"
+        "sidebar main info"
+        "footer footer footer";
+    background-color: #0b1220;
+    color: #cbd5e1;
+    font-family: "Courier";
+}
+
 nav {
-    background-color: gray;
-    padding: 1rem;
+   grid-area: nav;
+   gap: 1rem;
+   background-color: #0e0e0e;
+   align-items: center;
+   align-content: center;
+   display: flex;
+   text-align: center;
+   justify-content: center;
+}
+nav img {
+    background-color: rgb(255, 241, 198);
+    border-radius: 2rem 0.1rem;
+    padding: 0.5rem;
+}
+nav span {
+    font-weight: bold;
+}
+.sidebar {
+    grid-area: sidebar;
+}
+
+main {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer;
+}
+
+.card {
+    background-color: #b3b5b7;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.6rem;
+    box-shadow: 
+    0 10PX 25PX rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 5);
+    margin-top: 1rem;
+}
+
+.nav-img-txt {
+    padding: 2rem;
+    border-radius: 1rem;
+    background-color: azure;
+    color: azure;
+
+}
+
+.nav-txt {
+    background-color: aqua;
+    text-align: center;
+    align-items: center;
+    color: white;
+
+}
+
+
+
+footer ul {
+    gap: 2rem;
+    display: flex;
+    orientation: landscape;
+    background-color: black;
 }
