@@ -13,7 +13,7 @@ body {
         "nav nav nav"
         "sidebar main info"
         "footer footer footer";
-    background-color: #0b1220;
+    background-color: #18191a;
     color: #cbd5e1;
     font-family: "Courier";
 }
@@ -28,7 +28,7 @@ nav {
    text-align: center;
    justify-content: center;
 }
-nav img {
+nav .logo {
     background-color: rgb(255, 241, 198);
     border-radius: 2rem 0.1rem;
     padding: 0.5rem;
@@ -42,6 +42,7 @@ nav span {
 
 main {
     grid-area: main;
+    margin-inline: 1rem;
 }
 
 footer {
@@ -49,14 +50,33 @@ footer {
 }
 
 .card {
+    margin: 1rem;
+    height: auto;
     background-color: #b3b5b7;
     padding: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 0.6rem;
     box-shadow: 
-    0 10PX 25PX rgba(0, 0, 0, 0.8),
+    0 10px 5px rgba(85, 85, 85, 0.8),
     inset 0 1px 0 rgba(255, 255, 255, 5);
-    margin-top: 1rem;
+}
+
+#epp {
+    background-color: #8f0101;
+    color: rgb(255, 173, 173);
+    text-align: center;
+    justify-content: center;
+    box-shadow: 0px 20px -50px rgb(174, 47, 8, 0.8);
+}
+.card-conx {
+    background-color: rgba(6, 227, 10, 0.504);
+    padding: 0.5rem;
+   
+    border-radius: 0.3rem;   
+}
+.card-conx img {
+    background-color: rgba(6, 227, 10, 0.504);
+    border-radius: 0.3rem;   
 }
 
 .nav-img-txt {
@@ -75,7 +95,28 @@ footer {
 
 }
 
+.info {
+    background-color: rgb(1, 69, 69);
+    padding: 1rem;
+    border-radius: 2rem;
+}
 
+.txt-sections {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    padding-block: 0.5rem;
+}
+.card-chart {
+    box-shadow: 0px 10px 60px -15px rgba(220, 219, 216, 0.8);
+    background-color: #b3b5b7;
+    width: 1fr;
+
+    height: 15rem;
+    margin-block: 1rem;
+    border-radius: 1rem;
+}
 
 footer ul {
     gap: 2rem;

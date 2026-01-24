@@ -9,22 +9,23 @@
 </head>
 <body>
     <nav>
-        <img src="../static/Logotipo.png" width="10%">
+        <img src="../static/Logotipo.png" class="logo" width="10%">
         <span>
             CONTROL VEHÍCULO AUTÓNOMO EPP
         </span>
         <div class="card-conx">
-            <img src="">
-            <label>Conectado</label>
+            <img src="../static/connected_icon.svg" width="12rem">
+            Conectado
         </div>
-        <img src="settings.png">
-        <img src="theme.png">
-        <img src="profile.png">
+        <img src="../static/settings_icon.svg" width="50rem">
+        <img src="../static/w_light_icon.svg" width="50rem">
+        <img src="../static/icon_profile.svg" width="50rem">
     </nav>
     <aside class="sidebar">
         <div class="card">hola</div>
     </aside>
     <main>
+
         <div class="card">
 <img src="/video_feed" width="1080" height="720" style="border: 3px solid rgb(255, 255, 255);" alt="Transmisión">
         </div>
@@ -32,9 +33,15 @@
 
     </main>
     <section class="info">
-        <span>Estadísticas</span>
+        <div class="txt-sections">
+            <img src="../static/stats_icon.svg" width="40rem">
+            Estadísticas
+        </div>
+        <div class="card-chart">
+            
+        </div>
         <div class="card-chart"></div>
-        <div class="card-chart"></div>
+        <div class="card-chart" id="epp">EPP NO DETECTADO SONANDO ALARMAAAAA</div>
     </section>
         
 </body>
