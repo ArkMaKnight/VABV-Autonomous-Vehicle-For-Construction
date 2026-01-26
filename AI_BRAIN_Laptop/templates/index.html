@@ -7,8 +7,9 @@
     <link rel="icon" type="image/png" href="../static/Logotipo.png">
     <title>TESI Project | Control de Vehículo</title>
 </head>
-<body>
+<body class="sidebar-collapsed">
     <nav>
+        <button id="toggleSidebar">☰</button>
         <img src="../static/Logotipo.png" class="logo" width="10%">
         <span>
             CONTROL VEHÍCULO AUTÓNOMO EPP
@@ -48,17 +49,13 @@
 <footer>
     <div class="status">
         <ul>
-<li>Conexión Cámara</li>
-<li>Conexión Ruedas</li>
-<li>Tasa de Frames</li>
-        </ul>
+<li class="status-conx">Conexión Cámara</li>
+<li class="status-conx">Conexión Ruedas</li>
+<li class="status-conx">Tasa de Frames</li>
 
-    </div>
-    <div class="status_conexion">
-        <ul>
-            <li>Tiempo Activo: </li>
-            <li>dBi:</li>
-            <li>Pérdida: </li>
+            <li class="status-conx2">Tiempo Activo: </li>
+            <li class="status-conx2">dBi:</li>
+            <li class="status-conx2">Pérdida: </li>
         </ul>
     </div>
 </footer>

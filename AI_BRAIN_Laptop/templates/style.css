@@ -16,6 +16,16 @@ body {
     background-color: #18191a;
     color: #cbd5e1;
     font-family: "Courier";
+    transition: grid-template-columns 0.3s ease;
+}
+
+body.sidebar-collapsed {
+    grid-template-columns: 4rem 1fr 20rem;
+}
+
+body.sidebar-collapsed .sidebar span {
+  opacity: 0;
+  pointer-events: none;
 }
 
 nav {
@@ -63,6 +73,7 @@ footer {
 
 #epp {
     background-color: #8f0101;
+  display: grid;
     color: rgb(255, 173, 173);
     text-align: center;
     justify-content: center;
@@ -74,6 +85,21 @@ footer {
    
     border-radius: 0.3rem;   
 }
+
+.status-conx2 {
+    background-color: rgb(4, 24, 69);
+    text-decoration: none;
+    padding: 0.3rem;
+    list-style-type: none;
+}
+
+.status-conx {
+    background-color: rgb(125, 4, 28);
+    text-decoration: none;
+    padding: 0.3rem;
+    list-style-type: none;
+}
+
 .card-conx img {
     background-color: rgba(6, 227, 10, 0.504);
     border-radius: 0.3rem;   
