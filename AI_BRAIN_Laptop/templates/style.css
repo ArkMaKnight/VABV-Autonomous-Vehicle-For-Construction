@@ -74,16 +74,23 @@ footer {
 .video-card {
     position: relative;
     overflow: hidden;
-    box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 20px 40px rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s ease;
 }
 .video-card #video-trans {
     width: 100%;
     height: auto;
     border-radius: 0.8rem;
     display: block;
+    box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 20px 40px rgba(0, 0, 0, 0.6);
+
 }
+
+.video-card:hover {
+    transform: scale(1.02);
+}
+
 .video-span {
     position: absolute;
     top: 0.75rem;
