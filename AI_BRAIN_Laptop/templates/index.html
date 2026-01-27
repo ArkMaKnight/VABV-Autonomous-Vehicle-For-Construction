@@ -9,7 +9,7 @@
 </head>
 <body class="sidebar-collapsed">
     <nav>
-        <button id="toggleSidebar">☰</button>
+        <button id="toggleSidebar"><img src="../static/icon_menu.svg" height="40rem"></button>
         <img src="../static/Logotipo.png" class="logo" width="10%">
         <span>
             CONTROL VEHÍCULO AUTÓNOMO EPP
@@ -23,12 +23,14 @@
         <img src="../static/icon_profile.svg" width="50rem">
     </nav>
     <aside class="sidebar">
-        <div class="card">hola</div>
+        <div class="card"></div>
     </aside>
     <main>
 
-        <div class="card">
-<img src="/video_feed" width="1080" height="720" style="border: 3px solid rgb(255, 255, 255);" alt="Transmisión">
+        <div class="card video-card">
+        
+        <span class="video-span"><img src="../static/b_icon_wifi_low.svg" width="14rem">&nbsp;En Directo</span>
+        <img id="video-trans" src="/video_feed" width="1080" height="720" style="border: 3px solid rgb(255, 255, 255);" alt="Transmisión">
         </div>
 
 
@@ -59,4 +61,5 @@
         </ul>
     </div>
 </footer>
+<script src="script.js"></script>
 </html>

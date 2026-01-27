@@ -7,7 +7,7 @@
 body {
     display: grid;
     min-height: 100vh;
-    grid-template-columns: 200px 1fr 350px;
+    grid-template-columns: 10rem 1fr 20rem;
     grid-template-rows: auto 1fr auto;
     grid-template-areas: 
         "nav nav nav"
@@ -16,11 +16,11 @@ body {
     background-color: #18191a;
     color: #cbd5e1;
     font-family: "Courier";
-    transition: grid-template-columns 0.3s ease;
+    transition: grid-template-columns 0.3s cubic-bezier(.4,0,.2,1);
 }
 
 body.sidebar-collapsed {
-    grid-template-columns: 4rem 1fr 20rem;
+    grid-template-columns: 3.5rem 1fr 20rem;
 }
 
 body.sidebar-collapsed .sidebar span {
@@ -69,6 +69,31 @@ footer {
     box-shadow: 
     0 10px 5px rgba(85, 85, 85, 0.8),
     inset 0 1px 0 rgba(255, 255, 255, 5);
+}
+
+.video-card {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 20px 40px rgba(0, 0, 0, 0.6);
+}
+.video-card #video-trans {
+    width: 100%;
+    height: auto;
+    border-radius: 0.8rem;
+    display: block;
+}
+.video-span {
+    position: absolute;
+    top: 0.75rem;
+    left: 1rem;
+    background-color: rgb(125, 4, 28);
+    color: white;
+    padding: 0.3rem 0.7rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 1rem 0.2rem;
 }
 
 #epp {
