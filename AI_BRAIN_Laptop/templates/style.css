@@ -7,7 +7,7 @@
 body {
     display: grid;
     min-height: 100vh;
-    grid-template-columns: 10rem 1fr 20rem;
+    grid-template-columns: 13rem 1fr 20rem;
     grid-template-rows: auto 1fr auto;
     grid-template-areas: 
         "nav nav nav"
@@ -20,7 +20,7 @@ body {
 }
 
 body.sidebar-collapsed {
-    grid-template-columns: 3.5rem 1fr 20rem;
+    grid-template-columns: 6rem 1fr 20rem;
 }
 
 body.sidebar-collapsed .sidebar span {
