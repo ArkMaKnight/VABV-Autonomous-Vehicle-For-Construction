@@ -3,52 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='/css/style.css')}}">
     <link rel="icon" type="image/png" href="../static/Logotipo.png">
     <title>TESI Project | Control de Vehículo</title>
 </head>
 <body class="sidebar-collapsed">
     <nav>
-        <button id="toggleSidebar"><img src="../static/icon_menu.svg" height="40rem"></button>
-        <img src="../static/Logotipo.png" class="logo" width="10%">
+        <button id="toggleSidebar"><img src="../static/img/icon_menu.svg" height="40rem"></button>
+        <img src="../static/img/Logotipo.png" class="logo" width="10%">
         <span>
             CONTROL VEHÍCULO AUTÓNOMO EPP
         </span>
         <div class="card-conx">
-            <img src="../static/connected_icon.svg" width="12rem">
+            <img src="../static/img/connected_icon.svg" width="12rem">
             Conectado
         </div>
-        <img src="../static/settings_icon.svg" width="50rem">
-        <img src="../static/w_light_icon.svg" width="50rem">
-        <img src="../static/icon_profile.svg" width="50rem">
+        <img src="../static/img/settings_icon.svg" width="50rem">
+        <img src="../static/img/w_light_icon.svg" width="50rem">
+        <img src="../static/img/icon_profile.svg" width="50rem">
     </nav>
     <aside class="sidebar">
         <div class="card">
-            <img src="../static/home.svg" width="30rem"> 
+            <img src="../static/img/home.svg" width="30rem"> 
             <span class="">Inicio</span>
         </div>
               <div class="card">
-            <img src="../static/stats_white.svg" width="30rem"> 
+            <img src="../static/img/stats_white.svg" width="30rem"> 
             <span class="">Reportes</span>
         </div>
         <div class="card">
-            <img src="../static/print_white.svg" width="30rem"> 
-            <span class="">Imprimir</span>
+            <img src="../static/img/print_white.svg" width="30rem"> 
+            <span class="">Descargar Logs</span>
         </div>
           <div class="card">
-            <img src="../static/control_white.svg" width="30rem"> 
+            <img src="../static/img/control_white.svg" width="30rem"> 
             <span class="">Control</span>
-        </div>
-        <div class="card">
-            <img src="../static/alarm_white.svg" width="30rem"> 
-            <span class="">Tono de Alarma</span>
         </div>
     </aside>
     <main>
 
         <div class="card video-card">
         
-        <span class="video-span"><img src="../static/b_icon_wifi_low.svg" width="14rem">&nbsp;En Directo</span>
+        <span class="video-span"><img src="../static/img/b_icon_wifi_low.svg" width="14rem">&nbsp;En Directo</span>
         <img id="video-trans" src="/video_feed" width="1080" height="720" style="border: 3px solid rgb(255, 255, 255);" alt="Transmisión">
         </div>
 
@@ -56,7 +52,7 @@
     </main>
     <section class="info">
         <div class="txt-sections">
-            <img src="../static/stats_icon.svg" width="40rem">
+            <img src="../static/img/stats_icon.svg" width="40rem">
             Estadísticas
         </div>
         <div class="card-chart">
@@ -75,10 +71,10 @@
 <li class="status-conx">Tasa de Frames</li>
 
             <li class="status-conx2">Tiempo Activo: </li>
-            <li class="status-conx2">dBi:</li>
+            <li class="status-conx2">Latencia:</li>
             <li class="status-conx2">Pérdida: </li>
         </ul>
     </div>
 </footer>
-<script src="script.js"></script>
+<script src="{{url_for('static', filename='/js/script.js')}}"></script>
 </html>
