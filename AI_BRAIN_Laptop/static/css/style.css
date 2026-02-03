@@ -20,7 +20,7 @@ body {
         "nav nav nav"
         "sidebar main info"
         "footer footer footer";
-    background-color: #18191a;
+    background-color: #000000;
     color: #cbd5e1;
     font-family: "Courier";
     transition: grid-template-columns 0.3s cubic-bezier(.4,0,.2,1);
@@ -206,18 +206,16 @@ footer {
 
 
 .info {
-    background-color: rgb(1, 69, 69);
+    background-color: rgb(51, 52, 52);
     padding: 1rem;
     border-radius: 2rem;
 }
 
 .txt-sections {
-
     align-items: center;
     justify-content: center;
     font-family: "Jersey 25";
-    font-size: larger;
-    text-align: center;
+    font-size: 1.4rem;
     border-radius: 0.5rem;
     padding-block: 0.5rem;
 }
