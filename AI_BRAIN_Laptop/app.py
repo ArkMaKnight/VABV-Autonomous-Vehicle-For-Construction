@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 from robot_controller import RobotController
 from colors_detection import colorsDetections 
 from ThreadedCamera import ThreadedESP32Camera
+from flask_socketio import SocketIO, emit
 import cv2, os
-import time
+import time, threading
 
 
 # 1. Cargamos el controlador de nuestro robotcito
@@ -26,6 +27,8 @@ print("========================================")
 print("Carga de modelo YOLO de Roboflow...")
 app  = Flask(__name__)
 model = YOLO(r'AI_BRAIN_Laptop\modelos\model_best.pt')
+socketio = SocketIO(app, cors_allowed_origins="*")
+
 
 if model is not None:
     print("Felicidades, modelo encontrado y cargado.") 
@@ -166,8 +169,6 @@ def generate_frame():
         cv2.putText(frame, msg_output, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
 
 
-    
-
         if robot is not None and current_action != last_command_sent:
                 match current_action:
                     case "STOP":
@@ -190,6 +191,19 @@ def generate_frame():
         b'Content-Type: image/jpeg\r\n\r\n' + 
         buffer.tobytes() + b'\r\n')
 
+def background_telemetry():
+    while True: 
+        data = {
+            "safe": 0,
+            "no_safe": 0,
+            "fps": 0,
+            "alarms": 0,
+            "persons": 0
+        }
+        socketio.emit('update_dashboard', data)
+        time.sleep(1)
+threading.Thread(target=background_telemetry, daemon=True).start()
+
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -198,5 +212,10 @@ def index():
 def video_feed():
     return Response(generate_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@SocketIO.on('control_command')
+def handle_command(json_data):
+    action = json_data['action']
+    print("Control implementado:", action)
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=False)
+    socketio.run(app, host='0.0.0.0', debug=False)

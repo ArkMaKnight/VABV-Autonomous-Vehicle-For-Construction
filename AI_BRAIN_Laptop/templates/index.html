@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static', filename='/css/style.css')}}">
     <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="icon" type="image/png" href="../static/Logotipo.png">
+    <link rel="icon" type="image/png" href="../static/img/Logotipo.png">
     <title>TESI Project | Control de Vehículo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Cursive:wght@400..700&family=Jersey+25&family=Jockey+One&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Khand:wght@300;400;500;600;700&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=SN+Pro:ital,wght@0,200..900;1,200..900&family=Sintony:wght@400;700&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Cursive:wght@400..700&family=Jersey+25&family=Jockey+One&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Khand:wght@300;400;500;600;700&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=SN+Pro:ital,wght@0,200..900;1,200..900&family=Share+Tech&family=Sintony:wght@400;700&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 </head>
 <body class="sidebar-collapsed">
     <nav>
@@ -62,10 +62,15 @@
             Estadísticas
         </div>
         <div class="card-chart">
-            
+            <canvas id="est-one"></canvas>
         </div>
-        <div class="card-chart"></div>
-        <div class="card-chart" id="epp">EPP NO DETECTADO SONANDO ALARMAAAAA</div>
+        <div class="card-chart">
+            <canvas id="est-two"></canvas>
+        </div>
+        <div class="card-chart">
+            <canvas id="est-three"></canvas>
+        </div>
+        <div id="epp">EPP NO DETECTADO SONANDO ALARMAAAAA</div>
     </section>
         
 </body>

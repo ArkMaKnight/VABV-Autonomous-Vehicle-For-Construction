@@ -118,6 +118,7 @@ main {
 
 footer {
     grid-area: footer;
+    font-family: "Share Tech";
 }
 
 .card {
