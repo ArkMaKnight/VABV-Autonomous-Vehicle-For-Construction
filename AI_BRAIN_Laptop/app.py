@@ -8,11 +8,19 @@ from flask_socketio import SocketIO, emit
 import cv2, os
 import time, threading
 
+# ============================================
+# CONFIGURACIÓN DE ENTORNO
+# ============================================
+load_dotenv()
+DEBUG_MODE = os.getenv("DEBUG_MODE")
+print(DEBUG_MODE)
+print("========================================")
+print(f"🔧 MODO: {'DEBUG (sin cámara)' if DEBUG_MODE else 'PRODUCCIÓN'}")
+print("========================================")
 
 # 1. Cargamos el controlador de nuestro robotcito
-print("========================================")
 print("Inicializando vehículo...")
-load_dotenv()
+
 
 try: 
     robot = RobotController()
@@ -23,24 +31,33 @@ except Exception as e:
 print("========================================")
 
 
-# 2. Cargamos el modelo de Roboflow entrenado. 
-print("Carga de modelo YOLO de Roboflow...")
-app  = Flask(__name__)
-model = YOLO(r'AI_BRAIN_Laptop\modelos\model_best.pt')
-socketio = SocketIO(app, cors_allowed_origins="*")
+# 2. Cargamos el modelo de Roboflow entrenado (solo en producción)
+app = Flask(__name__)
+app.config['DEBUG_MODE'] = DEBUG_MODE  # Pasar config al template
 
+if not DEBUG_MODE:
+    print("Carga de modelo YOLO de Roboflow...")
+    model = YOLO(r'AI_BRAIN_Laptop\modelos\model_best.pt')
+    if model is not None:
+        print("Felicidades, modelo encontrado y cargado.") 
+    print("========================================")
+    print("Esperando por la cámara...")
+    
+    # 3. Cámara 
+    esp32 = os.getenv("IP_VIDEO")
+    print(f"Obteniendo conexión desde {esp32}")
+    camera = ThreadedESP32Camera(esp32)
+    print("📷 Cámara configurada")
+else:
+    print("⏭️ Saltando carga de modelo YOLO (modo debug)")
+    print("⏭️ Saltando conexión de cámara (modo debug)")
+    model = None
+    camera = None
 
-if model is not None:
-    print("Felicidades, modelo encontrado y cargado.") 
-print("========================================")
-print("Esperando por la cámara...")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
-# 3. Cámara 
-esp32 = os.getenv("IP_VIDEO")
-print(f"Obteniendo conexión desde {esp32}")
-camera = ThreadedESP32Camera(esp32)
-
-print("📷 Cámara configurada (conexión al solicitar video)")
+# Timestamp de inicio para calcular tiempo activo
+start_time = time.time()
 
 def generate_frame(): 
     last_command_sent = ""
@@ -192,13 +209,27 @@ def generate_frame():
         buffer.tobytes() + b'\r\n')
 
 def background_telemetry():
-    while True: 
+    last_emit_time = time.time()
+    while True:
+        current_time = time.time()
+        uptime_seconds = int(current_time - start_time)
+        hours, remainder = divmod(uptime_seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        uptime_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+        
+        # Calcular latencia (tiempo entre emits)
+        latency_ms = int((current_time - last_emit_time) * 1000)
+        last_emit_time = current_time
+        
         data = {
             "safe": 0,
             "no_safe": 0,
             "fps": 0,
             "alarms": 0,
-            "persons": 0
+            "persons": 0,
+            "uptime": uptime_str,
+            "latency": latency_ms,
+            "packet_loss": 0  # Implementar lógica real después
         }
         socketio.emit('update_dashboard', data)
         time.sleep(1)
@@ -210,12 +241,15 @@ def index():
 
 @app.route('/video_feed')
 def video_feed():
+    if DEBUG_MODE:
+        # En modo debug, retorna una imagen placeholder
+        return Response("Modo Debug - Cámara deshabilitada", mimetype='text/plain')
     return Response(generate_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@SocketIO.on('control_command')
+@socketio.on('control_command')
 def handle_command(json_data):
     action = json_data['action']
-    print("Control implementado:", action)
+    print(f"Control implementado: {action}")
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', debug=False)
+    socketio.run(app, host='0.0.0.0', debug=DEBUG_MODE, allow_unsafe_werkzeug=DEBUG_MODE)

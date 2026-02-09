@@ -3,62 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static', filename='/css/style.css')}}">
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="icon" type="image/png" href="../static/img/Logotipo.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/Logotipo.png') }}">
     <title>TESI Project | Control de Vehículo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Cursive:wght@400..700&family=Jersey+25&family=Jockey+One&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Khand:wght@300;400;500;600;700&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=SN+Pro:ital,wght@0,200..900;1,200..900&family=Share+Tech&family=Sintony:wght@400;700&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Khand:wght@300;400;500;600;700&family=Share+Tech&display=swap" rel="stylesheet">
+    <script type="importmap">
+        {
+            "imports": {
+                "chart.js": "{{ url_for('static', filename='js/lib/chart.js') }}",
+                "socket.io-client": "https://cdn.socket.io/4.7.4/socket.io.esm.min.js"
+            }
+        }
+    </script>
 </head>
 <body class="sidebar-collapsed">
     <nav>
-        <button id="toggleSidebar"><img src="../static/img/icon_menu.svg" height="40rem"></button>
-        <img src="../static/img/Logotipo.png" class="logo" width="55rem">
+        <button id="toggleSidebar"><img src="{{ url_for('static', filename='img/icon_menu.svg') }}" height="40rem"></button>
+        <img src="{{ url_for('static', filename='img/Logotipo.png') }}" class="logo" width="55rem">
         <span>
             CONTROL VEHÍCULO AUTÓNOMO EPP
         </span>
         <div class="card-conx">
-            <img src="../static/img/connected_icon.svg" width="12rem">
+            <img src="{{ url_for('static', filename='img/connected_icon.svg') }}" width="12rem">
             Conectado
         </div>
-        <img src="../static/img/settings_icon.svg" width="50rem">
-        <img src="../static/img/light_mode_w.svg" width="50rem">
-        <img src="../static/img/icon_profile.svg" width="50rem">
+        <img src="{{ url_for('static', filename='img/settings_icon.svg') }}" width="50rem">
+        <img src="{{ url_for('static', filename='img/light_mode_w.svg') }}" width="50rem">
+        <img src="{{ url_for('static', filename='img/icon_profile.svg') }}" width="50rem">
     </nav>
     <aside class="sidebar">
         <div class="card sb">
-            <img src="../static/img/home.svg" width="32rem"> 
+            <img src="{{ url_for('static', filename='img/home.svg') }}" width="32rem"> 
             <label id="lb-txt">Inicio</label>
         </div>
-            <div class="card sb">
-            <img src="../static/img/stats_white.svg" width="32rem"> 
+        <div class="card sb">
+            <img src="{{ url_for('static', filename='img/stats_white.svg') }}" width="32rem"> 
             <label id="lb-txt">Reportes</label>
         </div>
         <div class="card sb">
-            <img src="../static/img/w_download.svg" width="32rem"> 
+            <img src="{{ url_for('static', filename='img/w_download.svg') }}" width="32rem"> 
             <label id="lb-txt">Logs</label>
         </div>
-          <div class="card sb">
-            <img src="../static/img/control_white.svg" width="32rem"> 
-           <label id="lb-txt">Control</label>
+        <div class="card sb">
+            <img src="{{ url_for('static', filename='img/control_white.svg') }}" width="32rem"> 
+            <label id="lb-txt">Control</label>
         </div>
     </aside>
     <main>
 
         <div class="card video-card">
             <div class="video-span">
-                <img src="../static/img/connection_icon.svg" width="27rem">
+                <img src="{{ url_for('static', filename='img/connection_icon.svg') }}" width="27rem">
                 <span>En Directo</span>
             </div>
-        <img id="video-trans" src="/video_feed" width="1080" height="720" style="border: 3px solid rgb(255, 255, 255);" alt="Transmisión">
+            {% if config.DEBUG_MODE %}
+            <div id="video-trans" style="width: 1080px; height: 720px; border: 3px solid #fff; background: #222; display: flex; align-items: center; justify-content: center; color: #888;">
+                <span>🔧 Modo Debug - Cámara deshabilitada</span>
+            </div>
+            {% else %}
+            <img id="video-trans" src="/video_feed" width="1080" height="720" style="border: 3px solid rgb(255, 255, 255);" alt="Transmisión">
+            {% endif %}
         </div>
 
 
     </main>
     <section class="info">
         <div class="txt-sections sb">
-            <img src="../static/img/stats_icon.svg" width="40rem">
+            <img src="{{ url_for('static', filename='img/stats_icon.svg') }}" width="40rem">
             Estadísticas
         </div>
         <div class="card-chart">
@@ -77,16 +90,15 @@
 <footer>
     <div class="status">
         <ul>
-<li class="status-conx">Conexión Cámara</li>
-<li class="status-conx">Conexión Ruedas</li>
-<li class="status-conx">Tasa de Frames</li>
-
-            <li class="status-conx2">Tiempo Activo: </li>
-            <li class="status-conx2">Latencia:</li>
-            <li class="status-conx2">Pérdida: </li>
+            <li class="status-conx">Conexión Cámara</li>
+            <li class="status-conx">Conexión Ruedas</li>
+            <li class="status-conx">Tasa de Frames</li>
+            <li class="status-conx2">Tiempo Activo: <span id="metric-uptime">00:00:00</span></li>
+            <li class="status-conx2">Latencia: <span id="metric-latency">0</span>ms</li>
+            <li class="status-conx2">Pérdida: <span id="metric-loss">0</span>%</li>
         </ul>
     </div>
 </footer>
-<script type="module" src="{{url_for('static', filename='/js/script.js')}}"></script>
-<script type="module" src="../static/js/script.js"></script>
+<script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+<script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </html>

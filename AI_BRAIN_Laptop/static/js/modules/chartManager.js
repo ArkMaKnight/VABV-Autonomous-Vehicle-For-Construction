@@ -1,8 +1,11 @@
-import { Chart } from "chart.js";
+import { Chart, registerables } from "chart.js";
+Chart.register(...registerables);
 
 export class chartManager {
     constructor() {
         const ctx = document.getElementById('est-one');
+        const ctx2 = document.getElementById('est-two');
+        const ctx3 = document.getElementById('est-three');
         const radar = {
     labels: [
         'person',
@@ -27,11 +30,24 @@ export class chartManager {
     type: 'polarArea',
     data: radar,
     options: {}
-    })
-    }
+    });
 
+
+    this.chartTwo = new Chart(ctx2, {
+        type: 'radar',
+        data: radar,
+        options: {}
+    });
+
+    this.chatThree = new Chart(ctx3, {
+        type: 'bar',
+        data: radar,
+        options: {}
+    })
+}
     updateCharts(newData) {
         this.chartOne.data.datasets[0].data = newData;
         this.chartOne.update();
     }
+
 }

@@ -8,7 +8,7 @@ export class UIManager {
         this.toggleSideBar.addEventListener("click", () => {
         document.body.classList.toggle("sidebar-collapsed");
         });
-    }
+    } 
 
     detectAlarm() {
 
@@ -19,7 +19,6 @@ export class UIManager {
     }
 
     showControl() {
-
+        
     }
-    
-}
+    }
