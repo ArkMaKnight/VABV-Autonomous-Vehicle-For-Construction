@@ -13,7 +13,6 @@ import time, threading
 # ============================================
 load_dotenv()
 DEBUG_MODE = os.getenv("DEBUG_MODE")
-print(DEBUG_MODE)
 print("========================================")
 print(f"🔧 MODO: {'DEBUG (sin cámara)' if DEBUG_MODE else 'PRODUCCIÓN'}")
 print("========================================")

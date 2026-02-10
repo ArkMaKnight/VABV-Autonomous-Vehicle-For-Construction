@@ -1,7 +1,4 @@
-import { Chart, registerables } from "chart.js";
-Chart.register(...registerables);
-
-export class chartManager {
+export class ChartManager {
     constructor() {
         const ctx = document.getElementById('est-one');
         const ctx2 = document.getElementById('est-two');

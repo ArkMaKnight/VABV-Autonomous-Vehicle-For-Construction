@@ -1,5 +1,5 @@
 import { UIManager } from "./modules/uiManager.js";
-import { chartManager } from "./modules/chartManager.js";
+import { ChartManager } from "./modules/chartManager.js";
 
 
 console.log("Importando Interfaz...");
@@ -9,10 +9,10 @@ var ui;
 try {
   ui = new UIManager();
   console.log("✅Importación UI Finalizada.")
-  chartMg = new chartManager();
+  chartMg = new ChartManager();
   console.log("✅Importación de Gráficos.")
-} catch {
-  console.log("Falló en implementar UI de Dashboard.")
+} catch (e) {
+  console.log("Falló en implementar UI de Dashboard.", e)
 } finally {
   console.log("Módulo I: Ejecutado.")
 }

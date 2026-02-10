@@ -8,11 +8,13 @@
     <title>TESI Project | Control de Vehículo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Khand:wght@300;400;500;600;700&family=Share+Tech&display=swap" rel="stylesheet">
     <script type="importmap">
         {
             "imports": {
-                "chart.js": "{{ url_for('static', filename='js/lib/chart.js') }}",
+                "chart.js": "{{ url_for('static', filename='js/lib/chart.esm.js') }}",
+                "@kurkle/color": "{{url_for('static', filename='js/lib/color.esm.js')}}",
                 "socket.io-client": "https://cdn.socket.io/4.7.4/socket.io.esm.min.js"
             }
         }
