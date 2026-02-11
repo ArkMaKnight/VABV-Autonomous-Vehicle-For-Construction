@@ -1,5 +1,24 @@
 {
   "dependencies": {
     "chart.js": "^4.5.1"
-  }
+  },
+  "name": "carrito-epp-core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArkMaKnight/Carrito-EPP-Core.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArkMaKnight/Carrito-EPP-Core/issues"
+  },
+  "homepage": "https://github.com/ArkMaKnight/Carrito-EPP-Core#readme"
 }

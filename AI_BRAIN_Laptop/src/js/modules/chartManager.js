@@ -1,3 +1,6 @@
+import { Chart, registerables } from "chart.js";
+Chart.register(...registerables);
+
 export class ChartManager {
     constructor() {
         const ctx = document.getElementById('est-one');
