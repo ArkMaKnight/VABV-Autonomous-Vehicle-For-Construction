@@ -1,9 +1,11 @@
+import {Chart, registerables} from 'chart.js';
+Chart.register(...registerables);
 import { UIManager } from "./modules/uiManager.js";
 import { ChartManager } from "./modules/chartManager.js";
 
-
 console.log("Importando Interfaz...");
 var chartMg;
+var socket = io();
 var ui;
 
 try {
@@ -17,8 +19,19 @@ try {
   console.log("Módulo I: Ejecutado.")
 }
 
-var socket = io();
-socket.on('update_dashboard', (d) => {
+document.addEventListener('DOMContentLoaded', () => {
+  chartMg = new ChartManager();
+  socket.on('update_dashboard', (d) => {
+
+    // Actualizar métricas del footer
+  const uptimeEl = document.getElementById('metric-uptime');
+  const latencyEl = document.getElementById('metric-latency');
+  const lossEl = document.getElementById('metric-loss');
+  
+  if(uptimeEl) uptimeEl.textContent = d.uptime || '00:00:00';
+  if(latencyEl) latencyEl.textContent = d.latency || 0;
+  if(lossEl) lossEl.textContent = d.packet_loss || 0;
+
   const dataArray = [
     d.person || 0,
     d.animal || 0,
@@ -27,18 +40,11 @@ socket.on('update_dashboard', (d) => {
     d.objects || 0 
   ];
 
-  if(chartMg) {
+  if(chartMg && chartMg.updateCharts) {
     chartMg.updateCharts(dataArray);
   }
-
-  // Actualizar métricas del footer
-  const uptimeEl = document.getElementById('metric-uptime');
-  const latencyEl = document.getElementById('metric-latency');
-  const lossEl = document.getElementById('metric-loss');
   
-  if(uptimeEl) uptimeEl.textContent = d.uptime || '00:00:00';
-  if(latencyEl) latencyEl.textContent = d.latency || 0;
-  if(lossEl) lossEl.textContent = d.packet_loss || 0;
+})
 });
 
 
