@@ -5,6 +5,11 @@ export class ChartManager {
         const ctx = document.getElementById('est-one');
         const ctx2 = document.getElementById('est-two');
         const ctx3 = document.getElementById('est-three');
+        this.destroyCanvas(ctx);
+        this.destroyCanvas(ctx2);
+        this.destroyCanvas(ctx3);
+
+
         const radar = {
     labels: [
         'person',
@@ -28,20 +33,30 @@ export class ChartManager {
     this.chartOne = new Chart(ctx, {
     type: 'polarArea',
     data: radar,
-    options: {}
+    options: {
+        maintainAspectRatio: false,
+        responsive: true
+    }
     });
 
 
     this.chartTwo = new Chart(ctx2, {
         type: 'radar',
         data: radar,
-        options: {}
+        options: {      
+            responsive: true,  
+            maintainAspectRatio: false,
+        }
     });
 
     this.chatThree = new Chart(ctx3, {
         type: 'bar',
+        
         data: radar,
-        options: {}
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+        }
     })
 }
     updateCharts(newData) {
@@ -49,4 +64,10 @@ export class ChartManager {
         this.chartOne.update();
     }
 
+    destroyCanvas(ctx) {
+        let x = Chart.getChart(ctx);
+        if (x) x.destroy();
+        
+     
+    }
 }
