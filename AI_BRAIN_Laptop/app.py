@@ -5,8 +5,10 @@ from robot_controller import RobotController
 from colors_detection import colorsDetections 
 from ThreadedCamera import ThreadedESP32Camera
 from flask_socketio import SocketIO, emit
+from flask_cors import CORS
 import cv2, os
 import time, threading
+
 
 # ============================================
 # CONFIGURACIÓN DE ENTORNO
@@ -32,6 +34,7 @@ print("========================================")
 
 # 2. Cargamos el modelo de Roboflow entrenado (solo en producción)
 app = Flask(__name__)
+CORS(app)
 app.config['DEBUG_MODE'] = DEBUG_MODE  # Pasar config al template
 
 if not DEBUG_MODE:

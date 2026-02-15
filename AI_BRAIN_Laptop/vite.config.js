@@ -1,14 +1,13 @@
 import { defineConfig } from "vite";
-import {path} from "path"
-import { fileURLToPath } from "url";
+import { resolve } from "path";
 
 export default defineConfig({
-    root: '/src',
+    root: resolve(__dirname, 'src'),
     build: {
-        outDir: '../static/dist',
+        outDir: resolve(__dirname, 'static/dist'),
         emptyOutDir: true,
         rollupOptions: {
-            input: './main.js',
+            input: resolve(__dirname, 'src/main.js'),
             output: {
                 entryFileNames: 'bundle.js'
             }
@@ -16,10 +15,7 @@ export default defineConfig({
     },
     server: {
         port: 5173,
-        cors: true,
-        origin: 'http://localhost:5173',
-        headers: {
-            'access-control-allow-origin': '*'
-        }
+        host: '0.0.0.0',
+        cors: true
     }
 })
