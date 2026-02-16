@@ -19,20 +19,11 @@ try {
   console.log("Módulo I: Ejecutado.")
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
-  chartMg = new ChartManager();
+  ui.showSideBar();
   socket.on('update_dashboard', (d) => {
-
-    // Actualizar métricas del footer
-  const uptimeEl = document.getElementById('metric-uptime');
-  const latencyEl = document.getElementById('metric-latency');
-  const lossEl = document.getElementById('metric-loss');
-  
-  if(uptimeEl) uptimeEl.textContent = d.uptime || '00:00:00';
-  if(latencyEl) latencyEl.textContent = d.latency || 0;
-  if(lossEl) lossEl.textContent = d.packet_loss || 0;
-
-  const dataArray = [
+   const dataArray = [
     d.person || 0,
     d.animal || 0,
     d.hard_hat || 0,
@@ -40,12 +31,33 @@ document.addEventListener('DOMContentLoaded', () => {
     d.objects || 0 
   ];
 
-  if(chartMg && chartMg.updateCharts) {
-    chartMg.updateCharts(dataArray);
+  const uptimeEl = document.getElementById('metric-uptime');
+  const latencyEl = document.getElementById('metric-latency');
+  const lossEl = document.getElementById('metric-loss');
+
+  if (d.hard_hat >= d.person && d.vest >= d.person) {
+    ui.normalStatus();
+
+  } else {
+    ui.detectAlarm();
   }
-  
+
+  chartMg.updateCharts(dataArray);
+
+  if(uptimeEl) uptimeEl.textContent = d.uptime || '00:00:00';
+  if(latencyEl) latencyEl.textContent = d.latency || 0;
+  if(lossEl) lossEl.textContent = d.packet_loss || 0;
+
 })
 });
+
+document.addEventListener('keydown', (event) => {
+  const key = event.key.toLowerCase();
+  if(['w', 'a', 's', 'd'].includes(key)) {
+    socket.emit('control_command', {command: key, action: 'start'});
+    
+  }
+})
 
 
 

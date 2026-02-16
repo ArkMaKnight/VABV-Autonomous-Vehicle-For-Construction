@@ -9,6 +9,10 @@
     --light-background: rgb(255,255,255);
     --cards-color: rgb(179, 181, 183);
     --red-dark: rgb(125, 4, 28);
+    --no-alert-text: rgb(25, 229, 52);
+    --green-dark: rgb(7, 95, 3);
+    --text-alarm: rgb(255, 173, 173);
+    --alert-color: rgb(143, 1, 1);
 }
 
 body {
@@ -172,9 +176,9 @@ footer {
 }
 
 #epp {
-    background-color: #8f0101;
-  display: grid;
-    color: rgb(255, 173, 173);
+    background-color: var(--dark-background);
+    display: grid;
+    color: var(--text-alarm);
     text-align: center;
     justify-content: center;
     box-shadow: 0px 20px -50px rgb(174, 47, 8, 0.8);

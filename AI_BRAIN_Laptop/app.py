@@ -7,7 +7,7 @@ from ThreadedCamera import ThreadedESP32Camera
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import cv2, os
-import time, threading
+import time, threading, random
 
 
 # ============================================
@@ -15,13 +15,13 @@ import time, threading
 # ============================================
 load_dotenv()
 DEBUG_MODE = os.getenv("DEBUG_MODE")
+DATA_SIMULATED = DEBUG_MODE
 print("========================================")
 print(f"🔧 MODO: {'DEBUG (sin cámara)' if DEBUG_MODE else 'PRODUCCIÓN'}")
 print("========================================")
 
 # 1. Cargamos el controlador de nuestro robotcito
 print("Inicializando vehículo...")
-
 
 try: 
     robot = RobotController()
@@ -44,8 +44,6 @@ if not DEBUG_MODE:
         print("Felicidades, modelo encontrado y cargado.") 
     print("========================================")
     print("Esperando por la cámara...")
-    
-    # 3. Cámara 
     esp32 = os.getenv("IP_VIDEO")
     print(f"Obteniendo conexión desde {esp32}")
     camera = ThreadedESP32Camera(esp32)
@@ -57,7 +55,6 @@ else:
     camera = None
 
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
-
 # Timestamp de inicio para calcular tiempo activo
 start_time = time.time()
 
@@ -210,6 +207,18 @@ def generate_frame():
         b'Content-Type: image/jpeg\r\n\r\n' + 
         buffer.tobytes() + b'\r\n')
 
+def data_simulated():
+    if DATA_SIMULATED:
+        data = {
+            "person": random.randint(0,3),
+            "vest": random.randint(0,2),
+            "hard-hat": random.randint(0,2),
+            "animal": 0,
+            "objects": 0
+        }
+    socketio.emit('update_dashboard', data)
+    time.sleep(3)
+
 def background_telemetry():
     last_emit_time = time.time()
     while True:
@@ -235,7 +244,10 @@ def background_telemetry():
         }
         socketio.emit('update_dashboard', data)
         time.sleep(1)
-threading.Thread(target=background_telemetry, daemon=True).start()
+if (DEBUG_MODE):
+    threading.Thread(target=data_simulated, daemon=True).start()
+else:  
+    threading.Thread(target=background_telemetry, daemon=True).start()
 
 @app.route('/')
 def index():
@@ -244,7 +256,6 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     if DEBUG_MODE:
-        # En modo debug, retorna una imagen placeholder
         return Response("Modo Debug - Cámara deshabilitada", mimetype='text/plain')
     return Response(generate_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
