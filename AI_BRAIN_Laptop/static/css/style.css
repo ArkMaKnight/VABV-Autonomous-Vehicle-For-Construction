@@ -30,11 +30,6 @@ body {
     transition: grid-template-columns 0.3s cubic-bezier(.4,0,.2,1);
 }
 
-body.sidebar-collapsed {
-    grid-template-columns: 6rem 1fr 20rem;
-}
-
-
 nav {
    grid-area: nav;
    gap: 1rem;
@@ -78,7 +73,6 @@ nav span {
 
 .sidebar {
     grid-area: sidebar;
-
 }
 
 .sb {
@@ -86,6 +80,21 @@ nav span {
     gap: 0.5rem;
 }
 
+.sb:hover {
+    background-color: #0080ff;
+}
+
+#logsBox {
+    opacity: 0;
+}
+
+#ctrlBox {
+    opacity: 0;
+}
+
+.sidebar-collapsed {
+    grid-template-columns: 6rem 1fr 20rem;
+}
 
 body.sidebar-collapsed .sidebar label {
   opacity: 0;

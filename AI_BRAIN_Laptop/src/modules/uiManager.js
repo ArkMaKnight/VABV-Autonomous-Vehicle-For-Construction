@@ -1,7 +1,11 @@
 export class UIManager {
     constructor() {
-        this.toggleSideBar = document.getElementById("togglesidebar");
-        alertBox = document.getElementById("epp");
+        this.toggleSideBar = document.getElementById("toggleSidebar");
+        this.alertBox = document.getElementById("epp");
+        this.controlBtn = document.getElementById("ctrl");
+        this.controlBox = document.getElementById("ctrlBox")
+        this.logsBtn = document.getElementById("logs");
+        this.logsBox = document.getElementById("logsBox");
     }
 
     showSideBar() {
@@ -11,18 +15,28 @@ export class UIManager {
     } 
 
     detectAlarm() {
-        alertBox.innerHTML = "EPP NO DETECTADO. SONANDO ALARMA...";
-        alertBox.style.backgroundColor = 'var(--alert-color)';
-        alertBox.style.color = 'var(--text-alarm)';
+        this.alertBox.innerHTML = "EPP NO DETECTADO. SONANDO ALARMA...";
+        this.alertBox.style.backgroundColor = 'var(--alert-color)';
+        this.alertBox.style.color = 'var(--text-alarm)';
     }
 
     normalStatus() {
-        alertBox.innerHTML = "EPP DETECTADO. SEGURIDAD GARANTIZADA";
-        alertBox.backgroundColor = "var(--green-dark)";
-        alertBox.style.color = "var(--no-alert-text)";
+        this.alertBox.innerHTML = "EPP DETECTADO. SEGURIDAD GARANTIZADA";
+        this.alertBox.backgroundColor = "var(--green-dark)";
+        this.alertBox.style.color = "var(--no-alert-text)";
     }
 
     showControl() {
-        
+        this.controlBtn.addEventListener("click", () => {
+            this.controlBox.style.opacity = 100;
+            this.controlBtn.style.background = "var(--alert-color)";
+        });
+    }
+
+    showLogs() {
+        this.logsBtn.addEventListener("click", () => {
+            this.logsBox.style.opacity = 100;
+            this.logsBtn.style.background = "var(--alert-color)";
+        } )
     }
     }

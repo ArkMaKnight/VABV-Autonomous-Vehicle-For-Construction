@@ -22,6 +22,8 @@ try {
 
 document.addEventListener('DOMContentLoaded', () => {
   ui.showSideBar();
+  ui.showControl();
+  ui.showLogs();
   socket.on('update_dashboard', (d) => {
    const dataArray = [
     d.person || 0,
@@ -31,9 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     d.objects || 0 
   ];
 
-  const uptimeEl = document.getElementById('metric-uptime');
-  const latencyEl = document.getElementById('metric-latency');
-  const lossEl = document.getElementById('metric-loss');
+  showControl();
 
   if (d.hard_hat >= d.person && d.vest >= d.person) {
     ui.normalStatus();
@@ -55,9 +55,31 @@ document.addEventListener('keydown', (event) => {
   const key = event.key.toLowerCase();
   if(['w', 'a', 's', 'd'].includes(key)) {
     socket.emit('control_command', {command: key, action: 'start'});
-    
   }
 })
 
+document.addEventListener('keyup', e => {
+  const key = e.key.toLowerCase();
+  if(['w', 'a', 's', 'd'].includes(key)) {
+    socket.emit('control_command', {command: key, action: 'stop'});
+  }
+})
+
+function showControl() {
+  const uptimeEl = document.getElementById('metric-uptime');
+  const latencyEl = document.getElementById('metric-latency');
+  const lossEl = document.getElementById('metric-loss');
+
+}
+
+function addLog(msg) {
+  const logs = document.getElementById("logsBox");
+  const time = new Date().toLocaleDateString();
+  const newLine = document.createElement('div');
+  newLine.style.borderBottom = "1px solid #444";
+  newLine.innerHTML = `<small>[${time}</small> ${msg}`;
+  logs.insertBefore(newLine, logs.firstChild);
+
+}
 
 

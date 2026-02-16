@@ -30,17 +30,17 @@
     <aside class="sidebar">
         <div class="card sb">
             <img src="{{ url_for('static', filename='img/home.svg') }}" width="32rem"> 
-            <label id="lb-txt">Inicio</label>
+            <label id="lb-txt home">Inicio</label>
         </div>
         <div class="card sb">
             <img src="{{ url_for('static', filename='img/stats_white.svg') }}" width="32rem"> 
-            <label id="lb-txt">Reportes</label>
+            <label id="lb-txt stats">Reportes</label>
         </div>
-        <div class="card sb">
+        <div class="card sb" id="logs">
             <img src="{{ url_for('static', filename='img/w_download.svg') }}" width="32rem"> 
-            <label id="lb-txt">Logs</label>
+            <label id="lb-txt logs">Logs</label>
         </div>
-        <div class="card sb">
+        <div class="card sb" id="ctrl">
             <img src="{{ url_for('static', filename='img/control_white.svg') }}" width="32rem"> 
             <label id="lb-txt">Control</label>
         </div>
@@ -60,8 +60,15 @@
             <img id="video-trans" src="/video_feed" width="1080" height="720" style="border: 3px solid rgb(255, 255, 255);" alt="Transmisión">
             {% endif %}
         </div>
-
-
+    <div id="logsBox">
+        <label>
+            Holaaa
+        </label>
+        <small>Holaaa</small>
+    </div>
+    <div id="ctrlBox">
+            Tests
+    </div>
     </main>
     <section class="info">
         <div class="txt-sections sb">
@@ -78,9 +85,9 @@
             <canvas id="est-three"></canvas>
         </div>
         <div id="epp">SIN DETECCIONES ENCONTRADAS</div>
-        
+
     </section>
-        
+
 </body>
 <footer>
     <div class="status">
