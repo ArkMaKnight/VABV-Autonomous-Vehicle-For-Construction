@@ -7,3 +7,10 @@ def test_security(data):
     else: 
         return False, "NO SE HAN DETECTADO EQUIPOS DE PROTECCIÓN" 
     
+def test_people(count_people, timeout_person, limit_timeout):
+    if count_people > 0:
+        return True, 0
+    else: 
+        timeout_person +=1
+        if timeout_person >= limit_timeout:
+            return False, 0

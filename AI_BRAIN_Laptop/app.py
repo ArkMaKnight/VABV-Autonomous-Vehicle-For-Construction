@@ -6,6 +6,7 @@ from colors_detection import colorsDetections
 from ThreadedCamera import ThreadedESP32Camera
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
+import logic
 import cv2, os
 import time, threading, random
 
@@ -55,8 +56,21 @@ else:
     camera = None
 
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
-# Timestamp de inicio para calcular tiempo activo
 start_time = time.time()
+count_people = 0
+count_hardhat = 0
+count_vest = 0
+count_vehicle = 0
+count_objects = 0
+frame = None
+detect_objects = False
+detect_stop = False
+success_text = "EQUIPOS DE PROTECCIÓN Y DE SEGURIDAD DETECTADA..."
+fail_text = "NO SE DETECTÓ EQUIPOS DE PROTECCIÓN EPP. - ACTIVANDO ALARMA..."
+stop_text = "SE DETECTÓ SEÑAL DE PARE. PARANDO VEHÍCULO..."
+permission_personal = colorsDetections.gray_color
+msg_output = "NO DETECTADO"
+current_action = "NADA"
 
 def generate_frame(): 
     last_command_sent = ""
@@ -75,23 +89,6 @@ def generate_frame():
            continue
         frame = cv2.rotate(frame, cv2.ROTATE_180)
         results = model(frame, stream=True, conf=0.5, verbose = False)
-
-        # Parámetros para manipular xd
-        count_people = 0
-        count_hardhat = 0
-        count_vest = 0
-        count_vehicle = 0
-        count_objects = 0
-        detect_objects = False
-        detect_stop = False
-
-        # Variables a Cambiar
-        success_text = "EQUIPOS DE PROTECCIÓN Y DE SEGURIDAD DETECTADA..."
-        fail_text = "NO SE DETECTÓ EQUIPOS DE PROTECCIÓN EPP. - ACTIVANDO ALARMA..."
-        stop_text = "SE DETECTÓ SEÑAL DE PARE. PARANDO VEHÍCULO..."
-        permission_personal = colorsDetections.gray_color
-        msg_output = "NO DETECTADO"
-        current_action = "NADA"
 
         for r in results: 
             boxes = r.boxes
@@ -126,18 +123,8 @@ def generate_frame():
 
                 cv2.putText(frame, f'{currentClass} {conf}', (x1, y1-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.5, colorsDetections.white_color, 2)
 
-
-        if count_people > 0:
-            scan_person = True
-            timeout_person = 0
-
-        else: 
-           timeout_person +=1
-           if timeout_person >= limit_timeout:
-            scan_person = False
-            scan_epp = False
-            timeout_person = 0
-
+        count_people, timeout_person, limit_timeout = logic.test_people(count_people, timeout_person, limit_timeout)
+        
         if scan_person:
             current_frame = (count_hardhat > 0 and count_vest > 0) 
             print("Hay EPP? : ", scan_epp)
@@ -223,6 +210,8 @@ def background_telemetry():
     last_emit_time = time.time()
     while True:
         current_time = time.time()
+        state_camera = camera.read()
+        state_wheels = robot.last_send()
         uptime_seconds = int(current_time - start_time)
         hours, remainder = divmod(uptime_seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
@@ -236,14 +225,16 @@ def background_telemetry():
             "safe": 0,
             "no_safe": 0,
             "fps": 0,
-            "alarms": 0,
-            "persons": 0,
+            "alarms": logic.test_security(),
+            "persons": count_people,
             "uptime": uptime_str,
             "latency": latency_ms,
-            "packet_loss": 0  # Implementar lógica real después
+            "packet_loss": 0,  # Implementar lógica real después
+            "camera_connection": state_camera
         }
         socketio.emit('update_dashboard', data)
         time.sleep(1)
+    
 if (DEBUG_MODE):
     threading.Thread(target=data_simulated, daemon=True).start()
 else:  
