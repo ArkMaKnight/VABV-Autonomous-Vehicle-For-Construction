@@ -6,3 +6,4 @@ class colorsDetections:
     black_color = (0, 0, 0)
     white_color = (255, 255, 255)
     gray_color = (200, 200, 200)
+    yellow_color = (255,255,0)

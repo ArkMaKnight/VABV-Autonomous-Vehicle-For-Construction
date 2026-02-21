@@ -74,7 +74,6 @@ current_action = "NADA"
 
 def generate_frame(): 
     last_command_sent = ""
-    scan_person = False
     scan_epp = False
     timeout_person = 0
     timeout_epp = 0
@@ -124,53 +123,10 @@ def generate_frame():
                 cv2.putText(frame, f'{currentClass} {conf}', (x1, y1-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.5, colorsDetections.white_color, 2)
 
         count_people, timeout_person, limit_timeout = logic.test_people(count_people, timeout_person, limit_timeout)
-        
-        if scan_person:
-            current_frame = (count_hardhat > 0 and count_vest > 0) 
-            print("Hay EPP? : ", scan_epp)
-            print("Hay persona?",scan_person)
-            print("¿Tiene ambos EPP?",current_frame)
-            
-            if (current_frame):
-                scan_epp = True
-                timeout_epp = 0
-
-            else: 
-                timeout_epp += 1
-                if timeout_epp >= limit_timeout:
-                    scan_epp = False
-
-            if scan_epp:
-                permission_personal = colorsDetections.green_color
-                msg_output = success_text
-                print(msg_output)
-                current_action = "SLOW"
-        
-                if detect_stop: 
-                    current_action = "FORWARD"
-                    msg_output = stop_text  
-                else: 
-                    print("Disminuyendo velocidad...")
-                    current_action = "SLOW"
-            else:
-                permission_personal = colorsDetections.red_color
-                msg_output = fail_text
-                print(msg_output)
-                current_action = "STOP"
-
-        else:
-            print("ZONA DESPEJADA.")
-            current_action = "FORWARD"
-            if detect_objects:
-                current_action = "STOP"
-                print("Fin de la vía")
-                print("Esperando por más instrucciones...")
-
-       
+        permission_personal, current_action = logic.test_movement_security(count_people, count_hardhat, count_vest, detect_stop, detect_objects)        
 
         cv2.rectangle(frame, (0,0), (640,50), colorsDetections.white_color, -1)
         cv2.putText(frame, msg_output, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
-
 
         if robot is not None and current_action != last_command_sent:
                 match current_action:
@@ -200,6 +156,9 @@ def data_simulated():
             "person": random.randint(0,3),
             "vest": random.randint(0,2),
             "hard-hat": random.randint(0,2),
+            "camara_connected": camera != None,
+            "wheels_connected": False,
+            "latency": 0,
             "animal": 0,
             "objects": 0
         }
@@ -230,7 +189,7 @@ def background_telemetry():
             "uptime": uptime_str,
             "latency": latency_ms,
             "packet_loss": 0,  # Implementar lógica real después
-            "camera_connection": state_camera
+            "camera_connection": state_camera != None
         }
         socketio.emit('update_dashboard', data)
         time.sleep(1)
