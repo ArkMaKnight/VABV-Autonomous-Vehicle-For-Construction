@@ -153,14 +153,16 @@ def generate_frame():
 def data_simulated():
     if DATA_SIMULATED:
         data = {
-            "person": random.randint(0,3),
-            "vest": random.randint(0,2),
-            "hard-hat": random.randint(0,2),
-            "camara_connected": camera != None,
-            "wheels_connected": False,
-            "latency": 0,
-            "animal": 0,
-            "objects": 0
+"person": random.randint(0,3),
+                "vest": random.randint(0,2),
+                "hard_hat": random.randint(0,2),  # ✅ Corregir key (sin guión)
+                "camara_connected": camera is not None,
+                "wheels_connected": False,
+                "latency": random.randint(10, 100),  # ✅ Simular latencia
+                "animal": 0,
+                "objects": 0,
+                "uptime": "00:00:00",
+                "packet_loss": random.randint(0, 5)
         }
     socketio.emit('update_dashboard', data)
     time.sleep(3)
