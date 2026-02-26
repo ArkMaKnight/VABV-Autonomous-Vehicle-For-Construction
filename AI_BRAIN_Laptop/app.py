@@ -151,21 +151,32 @@ def generate_frame():
         buffer.tobytes() + b'\r\n')
 
 def data_simulated():
-    if DATA_SIMULATED:
-        data = {
-"person": random.randint(0,3),
-                "vest": random.randint(0,2),
-                "hard_hat": random.randint(0,2),  # ✅ Corregir key (sin guión)
+    while True:  # ✅ Agregar loop infinito
+        if DATA_SIMULATED:
+            data = {
+                "person": random.randint(0, 3),
+                "vest": random.randint(0, 2),
+                "hard_hat": random.randint(0, 2),
                 "camara_connected": camera is not None,
                 "wheels_connected": False,
-                "latency": random.randint(10, 100),  # ✅ Simular latencia
+                "latency": random.randint(10, 100),
                 "animal": 0,
                 "objects": 0,
-                "uptime": "00:00:00",
+                "uptime": get_uptime(),  # ✅ Calcular uptime real
                 "packet_loss": random.randint(0, 5)
-        }
-    socketio.emit('update_dashboard', data)
-    time.sleep(3)
+            }
+            socketio.emit('update_dashboard', data)
+        time.sleep(1)  # ✅ Mover DENTRO del while
+
+
+
+def get_uptime():
+    """Calcula el tiempo de actividad del servidor"""
+    uptime_seconds = int(time.time() - start_time)
+    hours, remainder = divmod(uptime_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
 
 def background_telemetry():
     last_emit_time = time.time()
