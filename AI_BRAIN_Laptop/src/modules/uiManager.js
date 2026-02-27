@@ -26,7 +26,14 @@ export class UIManager {
         this.alertBox.style.color = "var(--no-alert-text)";
     }
 
-
+    showControl() {
+        if (this.controlBtn && this.controlBox) {
+            this.controlBtn.addEventListener("click", () => {
+                this.controlBox.classList.toggle("visible");
+                this.controlBtn.classList.toggle("active");
+            });
+        }
+    }
     showLogs() {
         this.logsBtn.addEventListener("click", () => {
             this.logsBox.style.opacity = 100;

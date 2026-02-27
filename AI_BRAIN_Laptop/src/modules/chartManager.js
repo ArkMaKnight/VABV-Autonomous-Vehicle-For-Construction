@@ -62,6 +62,12 @@ export class ChartManager {
     updateCharts(newData) {
         this.chartOne.data.datasets[0].data = newData;
         this.chartOne.update();
+
+        this.chartTwo.data.datasets[0].data = newData;
+        this.chartTwo.update();
+
+        this.chatThree.data.datasets[0].data = newData;
+        this.chatThree.update();
     }
 
     destroyCanvas(ctx) {

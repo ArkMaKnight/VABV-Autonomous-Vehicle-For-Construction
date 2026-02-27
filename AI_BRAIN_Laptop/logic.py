@@ -7,14 +7,30 @@ fail_text = "NO SE DETECTÓ EQUIPOS DE PROTECCIÓN EPP. - ACTIVANDO ALARMA..."
 stop_text = "SE DETECTÓ SEÑAL DE PARE. PARANDO VEHÍCULO..."
 no_detection_text = "ZONA DESPEJADA. No se encuentran personas"
 
-def test_security(data):
-    get_hard_hat = data.get('hard_hat', 0) > 0
-    get_vest = data.get('vest', 0) > 0
-
-    if get_hard_hat and get_vest:
+def test_security(data: dict = None) -> tuple[bool, str]:
+    """
+    Verifica si se detectaron equipos de protección.
+    
+    Args:
+        data: Diccionario con conteos de detección
+        
+    Returns:
+        Tupla (es_seguro, mensaje)
+    """
+    if not data:
+        return True, "SIN DATOS"
+    
+    person = data.get('person', 0)
+    hard_hat = data.get('hard_hat', 0)
+    vest = data.get('vest', 0)
+    
+    if person == 0:
+        return True, "NO HAY PERSONAS EN EL ÁREA"
+    
+    if hard_hat >= person and vest >= person:
         return True, "SE HAN DETECTADO EQUIPOS DE PROTECCIÓN"
-    else: 
-        return False, "NO SE HAN DETECTADO EQUIPOS DE PROTECCIÓN" 
+    
+    return False, "NO SE HAN DETECTADO EQUIPOS DE PROTECCIÓN"
     
 def test_people(count_people, timeout_person, limit_timeout):
     if count_people > 0:

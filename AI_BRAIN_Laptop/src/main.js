@@ -1,5 +1,6 @@
 import {Chart, registerables} from 'chart.js';
 Chart.register(...registerables);
+import {io} from 'socket.io-client';
 import { UIManager } from "./modules/uiManager.js";
 import { ChartManager } from "./modules/chartManager.js";
 
@@ -21,9 +22,15 @@ try {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+  const uptimeEl = document.getElementById('metric-uptime');
+  const latencyEl = document.getElementById('metric-latency');
+  const lossEl = document.getElementById('metric-loss');
+
+  
   ui.showSideBar();
-  ui.showControl();
   ui.showLogs();
+  ui.showControl();
+  
   socket.on('update_dashboard', (d) => {
    const dataArray = [
     d.person || 0,
@@ -33,7 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
     d.objects || 0 
   ];
 
-  showControl();
+  if(uptimeEl) uptimeEl.textContent = d.uptime || '00:00:00';
+  if(latencyEl) latencyEl.textContent = d.latency || 0;
+  if(lossEl) lossEl.textContent = d.packet_loss || 0;
+
 
   if (d.hard_hat >= d.person && d.vest >= d.person) {
     ui.normalStatus();
@@ -44,9 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   chartMg.updateCharts(dataArray);
 
-  if(uptimeEl) uptimeEl.textContent = d.uptime || '00:00:00';
-  if(latencyEl) latencyEl.textContent = d.latency || 0;
-  if(lossEl) lossEl.textContent = d.packet_loss || 0;
 
 })
 });
@@ -65,12 +72,7 @@ document.addEventListener('keyup', e => {
   }
 })
 
-function showControl() {
-  const uptimeEl = document.getElementById('metric-uptime');
-  const latencyEl = document.getElementById('metric-latency');
-  const lossEl = document.getElementById('metric-loss');
 
-}
 
 function addLog(msg) {
   const logs = document.getElementById("logsBox");
