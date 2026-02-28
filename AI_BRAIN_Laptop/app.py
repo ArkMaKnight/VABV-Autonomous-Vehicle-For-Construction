@@ -183,13 +183,12 @@ def background_telemetry():
     while True:
         current_time = time.time()
         state_camera = camera.read()
-        state_wheels = robot.last_send()
+        state_wheels = robot is not None and robot.status_connection()
         uptime_seconds = int(current_time - start_time)
         hours, remainder = divmod(uptime_seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
         uptime_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
         
-        # Calcular latencia (tiempo entre emits)
         latency_ms = int((current_time - last_emit_time) * 1000)
         last_emit_time = current_time
         
@@ -201,7 +200,8 @@ def background_telemetry():
             "persons": count_people,
             "uptime": uptime_str,
             "latency": latency_ms,
-            "packet_loss": 0,  # Implementar lógica real después
+            "packet_loss": 0,  
+            "state_wheels": state_wheels,
             "camera_connection": state_camera != None
         }
         socketio.emit('update_dashboard', data)
