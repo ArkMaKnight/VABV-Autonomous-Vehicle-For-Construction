@@ -15,7 +15,7 @@ import time, threading, random
 # CONFIGURACIÓN DE ENTORNO
 # ============================================
 load_dotenv()
-DEBUG_MODE = os.getenv("DEBUG_MODE")
+DEBUG_MODE = os.getenv("DEBUG_MODE", "False").lower() in ("true", "1", "yes")
 DATA_SIMULATED = DEBUG_MODE
 print("========================================")
 print(f"🔧 MODO: {'DEBUG (sin cámara)' if DEBUG_MODE else 'PRODUCCIÓN'}")
@@ -40,7 +40,7 @@ app.config['DEBUG_MODE'] = DEBUG_MODE  # Pasar config al template
 
 if not DEBUG_MODE:
     print("Carga de modelo YOLO de Roboflow...")
-    model = YOLO(r'AI_BRAIN_Laptop\modelos\model_best.pt')
+    model = YOLO("./modelos/model_best.pt")
     if model is not None:
         print("Felicidades, modelo encontrado y cargado.") 
     print("========================================")
@@ -62,9 +62,14 @@ count_hardhat = 0
 count_vest = 0
 count_vehicle = 0
 count_objects = 0
+timeout_person = 0
+timeout_epp = 0
+limit_timeout = 5
 frame = None
+mode_detection = True
 detect_objects = False
 detect_stop = False
+scan_epp = False
 success_text = "EQUIPOS DE PROTECCIÓN Y DE SEGURIDAD DETECTADA..."
 fail_text = "NO SE DETECTÓ EQUIPOS DE PROTECCIÓN EPP. - ACTIVANDO ALARMA..."
 stop_text = "SE DETECTÓ SEÑAL DE PARE. PARANDO VEHÍCULO..."
@@ -74,10 +79,10 @@ current_action = "NADA"
 
 def generate_frame(): 
     last_command_sent = ""
-    scan_epp = False
-    timeout_person = 0
-    timeout_epp = 0
-    limit_timeout = 5
+    global scan_epp, detect_stop, detect_objects
+    global count_people, count_hardhat, count_vest,count_vehicle, count_objects 
+    global timeout_person, limit_timeout, timeout_epp
+
 
     while True: 
         frame = camera.read()
@@ -122,13 +127,13 @@ def generate_frame():
 
                 cv2.putText(frame, f'{currentClass} {conf}', (x1, y1-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.5, colorsDetections.white_color, 2)
 
-        count_people, timeout_person, limit_timeout = logic.test_people(count_people, timeout_person, limit_timeout)
-        permission_personal, current_action = logic.test_movement_security(count_people, count_hardhat, count_vest, detect_stop, detect_objects)        
+        timeout_person, limit_timeout = logic.test_people(count_people, timeout_person, limit_timeout)
+        permission_personal, current_action = logic.test_movement_security(count_people, count_hardhat, count_vest, detect_stop, detect_objects, timeout_epp)        
 
         cv2.rectangle(frame, (0,0), (640,50), colorsDetections.white_color, -1)
         cv2.putText(frame, msg_output, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
 
-        if robot is not None and current_action != last_command_sent:
+        if robot is not None and current_action != last_command_sent and mode_detection:
                 match current_action:
                     case "STOP":
                         robot.stop()
@@ -139,7 +144,7 @@ def generate_frame():
                         robot.forward()
                     case "SLOW":
                         robot.slow_speed()
-                
+                last_command_sent = current_action
 
         ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
         if not ret:
@@ -182,8 +187,8 @@ def background_telemetry():
     last_emit_time = time.time()
     while True:
         current_time = time.time()
-        state_camera = camera.read()
-        state_wheels = robot is not None and robot.status_connection()
+        state_camera = camera is not None and camera.status_connection()
+        state_wheels = robot is not None
         uptime_seconds = int(current_time - start_time)
         hours, remainder = divmod(uptime_seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
@@ -224,8 +229,33 @@ def video_feed():
 
 @socketio.on('control_command')
 def handle_command(json_data):
+    global mode_detection
     action = json_data['action']
-    print(f"Control implementado: {action}")
+    print(f"Control Establecido: {mode_detection}")
+
+    if robot is None:
+        print("Robot no detectado.")
+        return
+
+    if action == "manual":
+        mode_detection = False
+        return
+    elif action == "autoIA":
+        mode_detection = True
+        return
+
+    match action:
+        case "forward":
+            robot.forward()
+        case "stop":
+            robot.stop()
+        case "slow":
+            robot.slow_speed()
+        case "alarm":
+            robot.alarm_detector()
+        case _:
+            print(f"Acción desconocida: {action}")
+
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', debug=DEBUG_MODE, allow_unsafe_werkzeug=DEBUG_MODE)

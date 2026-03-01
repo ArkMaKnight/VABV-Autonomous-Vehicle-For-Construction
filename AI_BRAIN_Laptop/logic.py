@@ -8,15 +8,7 @@ stop_text = "SE DETECTÓ SEÑAL DE PARE. PARANDO VEHÍCULO..."
 no_detection_text = "ZONA DESPEJADA. No se encuentran personas"
 
 def test_security(data: dict = None) -> tuple[bool, str]:
-    """
-    Verifica si se detectaron equipos de protección.
-    
-    Args:
-        data: Diccionario con conteos de detección
-        
-    Returns:
-        Tupla (es_seguro, mensaje)
-    """
+
     if not data:
         return True, "SIN DATOS"
     
@@ -33,15 +25,17 @@ def test_security(data: dict = None) -> tuple[bool, str]:
     return False, "NO SE HAN DETECTADO EQUIPOS DE PROTECCIÓN"
     
 def test_people(count_people, timeout_person, limit_timeout):
+    print(f"{timeout_person}, {limit_timeout}, {count_people}")
     if count_people > 0:
-        return True, 0
-    else: 
+        timeout_person = 0
+    else:
         timeout_person +=1
-        if timeout_person >= limit_timeout:
-            return False, 0
+        if timeout_person > limit_timeout:
+            timeout_person = limit_timeout
+    return timeout_person, limit_timeout
         
 
-def test_movement_security(count_person, count_hardhat, count_vest, detect_stop, detect_objects, limit_timeout):
+def test_movement_security(count_person, count_hardhat, count_vest, detect_stop, detect_objects, timeout_epp):
     if (count_person > 0):
         current_frame = (count_hardhat > 0 & count_vest > 0)
 

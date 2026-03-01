@@ -31,7 +31,11 @@ class ThreadedESP32Camera:
             self._connected = False
             time.sleep(2)
             return False
-        
+    
+    def status_connection(self):
+        frame = self.read()
+        return frame is not None
+    
     def update(self): 
         while not self._stop: 
             if not self._connected: 
