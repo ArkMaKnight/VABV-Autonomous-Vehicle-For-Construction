@@ -93,6 +93,15 @@ def generate_frame():
     timeout_epp = 0
 
     while True: 
+        # Resetear contadores en cada frame
+        count_people = 0
+        count_hardhat = 0
+        count_vest = 0
+        count_vehicle = 0
+        count_objects = 0
+        detect_stop = False
+        detect_objects = False
+        
         frame = camera.read()
        
         if frame is None:
@@ -241,20 +250,40 @@ def video_feed():
 @socketio.on('control_command')
 def handle_command(json_data):
     global mode_detection
-    action = json_data['action']
-    print(f"Control Establecido: {mode_detection}")
+    action = json_data.get('action', '')
+    command = json_data.get('command', '')
+    print(f"Control Establecido: {mode_detection}, action: {action}, command: {command}")
 
     if robot is None:
         print("Robot no detectado.")
         return
 
+    # Cambio de modo
     if action == "manual":
         mode_detection = False
+        print("🎮 Modo MANUAL activado")
         return
     elif action == "autoIA":
         mode_detection = True
+        print("🤖 Modo AUTOMÁTICO (IA) activado")
         return
 
+    # Control manual con WASD (solo funciona en modo manual)
+    if command in ['w', 'a', 's', 'd'] and not mode_detection:
+        if action == 'start':
+            match command:
+                case 'w':
+                    robot.forward()
+                case 's':
+                    robot.stop()
+                case 'a' | 'd':
+                    # TODO: Implementar giro izquierda/derecha si el robot lo soporta
+                    print(f"Giro {command} - no implementado aún")
+        elif action == 'stop':
+            robot.stop()
+        return
+
+    # Comandos directos
     match action:
         case "forward":
             robot.forward()

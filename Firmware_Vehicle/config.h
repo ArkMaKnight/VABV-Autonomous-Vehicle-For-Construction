@@ -2,15 +2,15 @@
 #define CONFIG_H 
 #include "esp_camera.h"
 
-const char* WIFI_ID = "EAPIS";
-const char* WIFI_PASS = "e@p1s4k*";
+ /* const char* WIFI_ID = "EAPIS";
+ const char* WIFI_PASS = "e@p1s4k*"; */
+/* const char* WIFI_ID = "Ark-Sig";
+const char* WIFI_PASS = "04012006"; */
+/* const char* WIFI_ID = "MARIN";
+// const char* WIFI_PASS = "43383270"; */
+const char* WIFI_ID = "PRJVH_ESP32";
+const char* WIFI_PASS = "esp32cam"; 
 
-// #define ROBOT_IP 192,168,100,50
-// #define GATEWAY 192,168,100,1
-
-#define ROBOT_IP 10,1,77,15
-#define GATEWAY 10,1,77,15
-#define SUBNET 255,255,255,0
 
 const char* API_ROBOT = "TESI_VEHAUT2025WAHFD";
 

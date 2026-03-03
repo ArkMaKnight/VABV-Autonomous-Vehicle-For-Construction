@@ -66,7 +66,30 @@
         <small>Holaaa</small>
     </div>
     <div id="ctrlBox">
-            Tests
+        <div class="ctrl-header">
+            <span>Panel de Control</span>
+        </div>
+        <div class="ctrl-modes">
+            <button id="btn-autoIA" class="ctrl-btn mode-btn active">🤖 Automático (IA)</button>
+            <button id="btn-manual" class="ctrl-btn mode-btn">🎮 Manual</button>
+        </div>
+        <div class="ctrl-status">
+            <span>Modo actual: <strong id="current-mode">AUTOMÁTICO</strong></span>
+        </div>
+        <div class="ctrl-wasd" id="wasd-controls">
+            <div class="wasd-row">
+                <button class="ctrl-btn wasd-btn" id="btn-w">W</button>
+            </div>
+            <div class="wasd-row">
+                <button class="ctrl-btn wasd-btn" id="btn-a">A</button>
+                <button class="ctrl-btn wasd-btn" id="btn-s">S</button>
+                <button class="ctrl-btn wasd-btn" id="btn-d">D</button>
+            </div>
+        </div>
+        <div class="ctrl-actions">
+            <button class="ctrl-btn action-btn" id="btn-alarm">🚨 Alarma</button>
+            <button class="ctrl-btn action-btn stop-btn" id="btn-stop">⛔ STOP</button>
+        </div>
     </div>
     </main>
     <section class="info">

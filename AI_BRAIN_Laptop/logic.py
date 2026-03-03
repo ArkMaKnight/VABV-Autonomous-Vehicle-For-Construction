@@ -42,30 +42,28 @@ def test_movement_security(count_person, count_hardhat, count_vest, detect_stop,
             timeout_epp = 0
             msg_output = success_text
             print(msg_output)
-            print("DISMINUYENDO LA VELOCIDAD....")
-            action = "SLOW"
+            
             if detect_stop:
                 action = "STOP"
                 msg_output = stop_text
                 print(f"{msg_output}: {action}")
                 permission_personal = colorsDetections.yellow_color
             else: 
-                action = "FORWARD"
-                msg_output = no_detection_text
-                print(f"{msg_output}: {action}")
-                return permission_personal, action
+                # Persona con EPP detectada, reducir velocidad
+                action = "SLOW"
+                print("DISMINUYENDO LA VELOCIDAD....")
             return permission_personal, action
         else: 
             timeout_epp +=1
             permission_personal = colorsDetections.red_color
             msg_output = fail_text
             print(msg_output)
-            return permission_personal, "STOP"
+            return permission_personal, "ALARM"
         
     else: 
         if detect_objects: 
             print("Esperando por más instrucciones...")
-            print("Se han detecado objetos en la vía.")
-            return "STOP"
+            print("Se han detectado objetos en la vía.")
+            return colorsDetections.yellow_color, "STOP"
         print(no_detection_text)
         return colorsDetections.gray_color, "FORWARD"

@@ -62,8 +62,25 @@ static esp_err_t stream_handler(httpd_req_t *req) {
 // ==========================================
 // 2. LÓGICA DE CONTROL (JSON)
 // ==========================================
+
+// Maneja CORS preflight (OPTIONS)
+void handleControlOptions() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.sendHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
+  server.send(204);
+}
+
 void handleControl() {
-  server.sendHeader("Access-Control-Allow-Origin", "*"); // Permite conexión externa
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.sendHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Manejar preflight
+  if (server.method() == HTTP_OPTIONS) {
+    server.send(204);
+    return;
+  }
 
   if (server.method() != HTTP_POST) {
     server.send(405, "text/plain", "Use metodo POST");
@@ -71,15 +88,27 @@ void handleControl() {
   }
 
   String message = server.arg("plain");
+  Serial.println("📥 Recibido: " + message);
+  
   StaticJsonDocument<200> doc;
   DeserializationError error = deserializeJson(doc, message);
 
   if (error) {
+    Serial.println("❌ Error JSON");
     server.send(400, "application/json", "{\"error\":\"JSON Mal\"}");
     return;
   }
 
+  // Validar API Key
+  String auth = doc["auth"];
+  if (auth != API_ROBOT) {
+    Serial.println("❌ API Key inválida");
+    server.send(401, "application/json", "{\"error\":\"No autorizado\"}");
+    return;
+  }
+
   String action = doc["action"];
+  Serial.println("🎮 Acción: " + action);
 
   if (action == "FORWARD") {
     forward();
@@ -89,7 +118,16 @@ void handleControl() {
     stop();
     server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Detenido\"}");
   }
+  else if (action == "SLOW") {
+    slow();
+    server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Velocidad reducida\"}");
+  }
+  else if (action == "ALARM_ACTIVATED") {
+    alarm();
+    server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Alarma activada\"}");
+  }
   else {
+    Serial.println("❌ Comando desconocido: " + action);
     server.send(400, "application/json", "{\"error\":\"Comando desconocido\"}");
   }
 }

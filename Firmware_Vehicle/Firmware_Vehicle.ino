@@ -19,7 +19,7 @@ void loop() {
 static unsigned long lastCheck = 0;
   if (millis() - lastCheck > 2000) {
     lastCheck = millis();
-    
+  
     if (WiFi.status() == WL_CONNECTED) {
       // Imprime la potencia de la señal (RSSI)
       // -30 a -50: Excelente | -60 a -70: Bien | -80 a -90: Pésimo (Casi desconectado)

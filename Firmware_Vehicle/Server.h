@@ -3,9 +3,9 @@
 
 #include <WiFi.h>
 #include "esp_http_server.h"
-#include "ESP32_Stream_Driver.h"    
 #include "config.h"
 #include "engine.h"
+#include "ESP32_Stream_Driver.h"
 
 
 // ==========================================
@@ -37,9 +37,12 @@ void iniciarTodoRed() {
   }
 
   // C) INICIAR CONTROL (Puerto 80)
-  server.on("/control", handleControl);
+  server.on("/control", HTTP_POST, handleControl);
+  server.on("/control", HTTP_OPTIONS, handleControlOptions);
   server.begin();
   Serial.println("✅ Control OK");
 }
+
+  
 
 #endif

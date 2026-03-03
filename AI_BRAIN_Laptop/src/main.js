@@ -74,17 +74,96 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 });
 
+// Variables de control
+let currentMode = 'autoIA';
+
+// Debug: verificar conexión del socket
+socket.on('connect', () => {
+  console.log('✅ Socket conectado al servidor');
+});
+
+socket.on('disconnect', () => {
+  console.log('❌ Socket desconectado');
+});
+
+// Función para cambiar modo
+function setMode(mode) {
+  console.log(`🎮 Cambiando a modo: ${mode}`);
+  currentMode = mode;
+  socket.emit('control_command', { action: mode });
+  
+  const btnAuto = document.getElementById('btn-autoIA');
+  const btnManual = document.getElementById('btn-manual');
+  const modeLabel = document.getElementById('current-mode');
+  const wasdControls = document.getElementById('wasd-controls');
+  
+  if (mode === 'autoIA') {
+    btnAuto.classList.add('active');
+    btnManual.classList.remove('active');
+    modeLabel.textContent = 'AUTOMÁTICO';
+    wasdControls.classList.remove('enabled');
+  } else {
+    btnManual.classList.add('active');
+    btnAuto.classList.remove('active');
+    modeLabel.textContent = 'MANUAL';
+    wasdControls.classList.add('enabled');
+  }
+}
+
+// Inicializar controles cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  // Botones de modo
+  document.getElementById('btn-autoIA')?.addEventListener('click', () => setMode('autoIA'));
+  document.getElementById('btn-manual')?.addEventListener('click', () => setMode('manual'));
+  
+  // Botones WASD
+  ['w', 'a', 's', 'd'].forEach(key => {
+    const btn = document.getElementById(`btn-${key}`);
+    if (btn) {
+      btn.addEventListener('mousedown', () => {
+        if (currentMode === 'manual') {
+          socket.emit('control_command', { command: key, action: 'start' });
+          btn.classList.add('pressed');
+        }
+      });
+      btn.addEventListener('mouseup', () => {
+        socket.emit('control_command', { command: key, action: 'stop' });
+        btn.classList.remove('pressed');
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.classList.remove('pressed');
+      });
+    }
+  });
+  
+  // Botón alarma
+  document.getElementById('btn-alarm')?.addEventListener('click', () => {
+    socket.emit('control_command', { action: 'alarm' });
+  });
+  
+  // Botón stop
+  document.getElementById('btn-stop')?.addEventListener('click', () => {
+    socket.emit('control_command', { action: 'stop' });
+  });
+});
+
+// Control por teclado
 document.addEventListener('keydown', (event) => {
   const key = event.key.toLowerCase();
-  if(['w', 'a', 's', 'd'].includes(key)) {
+  console.log(`⌨️ Tecla presionada: ${key}, Modo: ${currentMode}`);
+  if(['w', 'a', 's', 'd'].includes(key) && currentMode === 'manual') {
+    console.log(`📤 Enviando comando: ${key} start`);
     socket.emit('control_command', {command: key, action: 'start'});
+    document.getElementById(`btn-${key}`)?.classList.add('pressed');
   }
 })
 
 document.addEventListener('keyup', e => {
   const key = e.key.toLowerCase();
   if(['w', 'a', 's', 'd'].includes(key)) {
+    console.log(`📤 Enviando comando: ${key} stop`);
     socket.emit('control_command', {command: key, action: 'stop'});
+    document.getElementById(`btn-${key}`)?.classList.remove('pressed');
   }
 })
 
