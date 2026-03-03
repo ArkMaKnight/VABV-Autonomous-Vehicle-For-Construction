@@ -8,6 +8,7 @@ class RobotController:
         self.api_key = os.getenv("API_KEY")
         self.last_send = 0
         self.endpoint = os.getenv("ENDPOINT_VIDEO")
+        self.is_connected = False
 
         if not self.base_url or not self.api_key:
             raise ValueError("Instancias no implementadas.")
@@ -24,14 +25,17 @@ class RobotController:
         try: 
             response = requests.post(url, json = payload, timeout= 0.5)
             if response.status_code == 200:
+                self.is_connected = True
                 print("Ejecución realizada. Correcto")
                 return True
             else: 
                 print("Ejecución rechazada. ")
                 return False
         except requests.exceptions.Timeout:
+            self.is_connected = False
             print(f"Sin respuesta de robot. {command}")
         except Exception as e: 
+            self.is_connected = False
             print(f"Hubo un error, error detectado: {e}")
         return False
     

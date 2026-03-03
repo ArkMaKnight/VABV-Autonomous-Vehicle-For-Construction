@@ -1,7 +1,5 @@
-from robot_controller import RobotController
 from colors_detection import colorsDetections
 
-robot = RobotController
 success_text = "EQUIPOS DE PROTECCIÓN Y DE SEGURIDAD DETECTADA..."
 fail_text = "NO SE DETECTÓ EQUIPOS DE PROTECCIÓN EPP. - ACTIVANDO ALARMA..."
 stop_text = "SE DETECTÓ SEÑAL DE PARE. PARANDO VEHÍCULO..."
@@ -37,7 +35,7 @@ def test_people(count_people, timeout_person, limit_timeout):
 
 def test_movement_security(count_person, count_hardhat, count_vest, detect_stop, detect_objects, timeout_epp):
     if (count_person > 0):
-        current_frame = (count_hardhat > 0 & count_vest > 0)
+        current_frame = (count_hardhat > 0 and count_vest > 0)
 
         if current_frame: 
             permission_personal = colorsDetections.green_color

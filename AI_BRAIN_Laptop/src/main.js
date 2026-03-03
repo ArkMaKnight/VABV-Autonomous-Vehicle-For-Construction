@@ -25,8 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const uptimeEl = document.getElementById('metric-uptime');
   const latencyEl = document.getElementById('metric-latency');
   const lossEl = document.getElementById('metric-loss');
+  const cameraIcon = document.getElementById('camera-icon');
+  const cameraStatus = document.getElementById('camera-status');
+  const wheelsIcon = document.getElementById('wheels-icon');
+  const wheelsStatus = document.getElementById('wheels-status');
 
-  
+   const ICONS = {
+    online: '/static/img/online_icon.svg',
+    offline: '/static/img/offline_icon.svg'
+  };
+
   ui.showSideBar();
   ui.showLogs();
   ui.showControl();
@@ -44,7 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if(latencyEl) latencyEl.textContent = d.latency || 0;
   if(lossEl) lossEl.textContent = d.packet_loss || 0;
 
+  if (cameraIcon && cameraStatus) {
+      cameraIcon.src = d.camera_connected ? ICONS.online : ICONS.offline;
+      cameraStatus.textContent = d.camera_connected ? 'Cámara Conectada' : 'Cámara Desconectada';
+    }
 
+    if (wheelsIcon && wheelsStatus) {
+      wheelsIcon.src = d.wheels_connected ? ICONS.online : ICONS.offline;
+      wheelsStatus.textContent = d.wheels_connected ? 'Ruedas Conectadas' : 'Ruedas Desconectadas';
+    }
   if (d.hard_hat >= d.person && d.vest >= d.person) {
     ui.normalStatus();
 

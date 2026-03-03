@@ -22,7 +22,7 @@ export class UIManager {
 
     normalStatus() {
         this.alertBox.innerHTML = "EPP DETECTADO. SEGURIDAD GARANTIZADA";
-        this.alertBox.backgroundColor = "var(--green-dark)";
+        this.alertBox.style.backgroundColor = "var(--green-dark)";
         this.alertBox.style.color = "var(--no-alert-text)";
     }
 

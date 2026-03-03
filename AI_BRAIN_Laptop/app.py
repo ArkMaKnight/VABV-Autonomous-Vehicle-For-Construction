@@ -84,6 +84,14 @@ def generate_frame():
     global timeout_person, limit_timeout, timeout_epp
 
 
+    count_people = 0
+    count_hardhat = 0
+    count_vest = 0
+    count_vehicle = 0
+    count_objects = 0
+    timeout_person = 0
+    timeout_epp = 0
+
     while True: 
         frame = camera.read()
        
@@ -201,7 +209,10 @@ def background_telemetry():
             "safe": 0,
             "no_safe": 0,
             "fps": 0,
-            "alarms": logic.test_security(),
+            "alarms": logic.test_security({
+                'person': count_people,
+                'hard_hat': count_hardhat,
+                'vest': count_vest}),
             "persons": count_people,
             "uptime": uptime_str,
             "latency": latency_ms,
