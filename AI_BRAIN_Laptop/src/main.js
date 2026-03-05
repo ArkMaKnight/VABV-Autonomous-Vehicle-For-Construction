@@ -77,6 +77,19 @@ document.addEventListener('DOMContentLoaded', () => {
 // Variables de control
 let currentMode = 'autoIA';
 
+// Función para enviar comandos por HTTP POST (más confiable que SocketIO)
+function sendControl(data) {
+  console.log('📤 Enviando control:', JSON.stringify(data));
+  fetch('/api/control', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(d => console.log('✅ Respuesta:', d))
+  .catch(e => console.error('❌ Error enviando control:', e));
+}
+
 // Debug: verificar conexión del socket
 socket.on('connect', () => {
   console.log('✅ Socket conectado al servidor');
@@ -90,7 +103,7 @@ socket.on('disconnect', () => {
 function setMode(mode) {
   console.log(`🎮 Cambiando a modo: ${mode}`);
   currentMode = mode;
-  socket.emit('control_command', { action: mode });
+  sendControl({ action: mode });
   
   const btnAuto = document.getElementById('btn-autoIA');
   const btnManual = document.getElementById('btn-manual');
@@ -122,12 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn) {
       btn.addEventListener('mousedown', () => {
         if (currentMode === 'manual') {
-          socket.emit('control_command', { command: key, action: 'start' });
+          sendControl({ command: key, action: 'start' });
           btn.classList.add('pressed');
         }
       });
       btn.addEventListener('mouseup', () => {
-        socket.emit('control_command', { command: key, action: 'stop' });
+        sendControl({ command: key, action: 'stop' });
         btn.classList.remove('pressed');
       });
       btn.addEventListener('mouseleave', () => {
@@ -138,12 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Botón alarma
   document.getElementById('btn-alarm')?.addEventListener('click', () => {
-    socket.emit('control_command', { action: 'alarm' });
+    sendControl({ action: 'alarm' });
   });
   
   // Botón stop
   document.getElementById('btn-stop')?.addEventListener('click', () => {
-    socket.emit('control_command', { action: 'stop' });
+    sendControl({ action: 'stop' });
   });
 });
 
@@ -153,7 +166,7 @@ document.addEventListener('keydown', (event) => {
   console.log(`⌨️ Tecla presionada: ${key}, Modo: ${currentMode}`);
   if(['w', 'a', 's', 'd'].includes(key) && currentMode === 'manual') {
     console.log(`📤 Enviando comando: ${key} start`);
-    socket.emit('control_command', {command: key, action: 'start'});
+    sendControl({command: key, action: 'start'});
     document.getElementById(`btn-${key}`)?.classList.add('pressed');
   }
 })
@@ -162,7 +175,7 @@ document.addEventListener('keyup', e => {
   const key = e.key.toLowerCase();
   if(['w', 'a', 's', 'd'].includes(key)) {
     console.log(`📤 Enviando comando: ${key} stop`);
-    socket.emit('control_command', {command: key, action: 'stop'});
+    sendControl({command: key, action: 'stop'});
     document.getElementById(`btn-${key}`)?.classList.remove('pressed');
   }
 })

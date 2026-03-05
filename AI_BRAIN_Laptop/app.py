@@ -247,28 +247,30 @@ def video_feed():
         return Response("Modo Debug - Cámara deshabilitada", mimetype='text/plain')
     return Response(generate_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@socketio.on('control_command')
-def handle_command(json_data):
+@app.route('/api/control', methods=['POST'])
+def api_control():
     global mode_detection
+    from flask import request, jsonify
+    json_data = request.get_json()
     action = json_data.get('action', '')
     command = json_data.get('command', '')
-    print(f"Control Establecido: {mode_detection}, action: {action}, command: {command}")
-
-    if robot is None:
-        print("Robot no detectado.")
-        return
+    print(f"🎮 [HTTP] Control Establecido: mode={mode_detection}, action={action}, command={command}")
 
     # Cambio de modo
     if action == "manual":
         mode_detection = False
         print("🎮 Modo MANUAL activado")
-        return
+        return jsonify({"status": "ok", "mode": "manual"})
     elif action == "autoIA":
         mode_detection = True
         print("🤖 Modo AUTOMÁTICO (IA) activado")
-        return
+        return jsonify({"status": "ok", "mode": "autoIA"})
 
-    # Control manual con WASD (solo funciona en modo manual)
+    if robot is None:
+        print("⚠️ Robot no detectado.")
+        return jsonify({"status": "error", "msg": "Robot no conectado"}), 503
+
+    # Control manual con WASD
     if command in ['w', 'a', 's', 'd'] and not mode_detection:
         if action == 'start':
             match command:
@@ -277,11 +279,10 @@ def handle_command(json_data):
                 case 's':
                     robot.stop()
                 case 'a' | 'd':
-                    # TODO: Implementar giro izquierda/derecha si el robot lo soporta
                     print(f"Giro {command} - no implementado aún")
         elif action == 'stop':
             robot.stop()
-        return
+        return jsonify({"status": "ok", "command": command, "action": action})
 
     # Comandos directos
     match action:
@@ -295,6 +296,48 @@ def handle_command(json_data):
             robot.alarm_detector()
         case _:
             print(f"Acción desconocida: {action}")
+            return jsonify({"status": "error", "msg": f"Acción desconocida: {action}"}), 400
+
+    return jsonify({"status": "ok", "action": action})
+
+@socketio.on('control_command')
+def handle_command(json_data):
+    global mode_detection
+    action = json_data.get('action', '')
+    command = json_data.get('command', '')
+    print(f"🎮 [WS] Control Establecido: mode={mode_detection}, action={action}, command={command}")
+
+    # Cambio de modo
+    if action == "manual":
+        mode_detection = False
+        return
+    elif action == "autoIA":
+        mode_detection = True
+        return
+
+    if robot is None:
+        print("⚠️ Robot no detectado.")
+        return
+
+    if command in ['w', 'a', 's', 'd'] and not mode_detection:
+        if action == 'start':
+            match command:
+                case 'w':
+                    robot.forward()
+                case 's':
+                    robot.stop()
+                case 'a' | 'd':
+                    print(f"Giro {command} - no implementado aún")
+        elif action == 'stop':
+            robot.stop()
+        return
+
+    match action:
+        case "forward": robot.forward()
+        case "stop": robot.stop()
+        case "slow": robot.slow_speed()
+        case "alarm": robot.alarm_detector()
+        case _: print(f"Acción desconocida: {action}")
 
 
 if __name__ == '__main__':
