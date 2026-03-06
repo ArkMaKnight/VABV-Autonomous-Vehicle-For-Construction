@@ -114,6 +114,18 @@ void handleControl() {
     forward();
     server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Avanzando\"}");
   } 
+  else if (action == "BACKWARD") {
+    backward();
+    server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Retrocediendo\"}");
+  }
+  else if (action == "LEFT") {
+    turnLeft();
+    server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Girando izquierda\"}");
+  }
+  else if (action == "RIGHT") {
+    turnRight();
+    server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Girando derecha\"}");
+  }
   else if (action == "STOP") {
     stop();
     server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Detenido\"}");

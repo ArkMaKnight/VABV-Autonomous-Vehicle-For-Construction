@@ -3,12 +3,12 @@
 
 #include "config.h"
 
-// Pin para buzzer/alarma (ajusta según tu conexión)
-#define PIN_BUZZER 2
+// Pin para buzzer/alarma en GPIO4
+#define PIN_BUZZER 4
 
 void stop() {
-  digitalWrite(PIN_WH1, LOW); digitalWrite(PIN_WH2, LOW);
-  digitalWrite(PIN_WH3, LOW); digitalWrite(PIN_WH4, LOW);
+  digitalWrite(PIN_WH1, LOW); digitalWrite(PIN_WH2, LOW);   // Motor izq parado
+  digitalWrite(PIN_WH3, LOW); digitalWrite(PIN_WH4, LOW);   // Motor der parado
   Serial.println("Vehículo detenido. (STOP)");
 }
 
@@ -21,42 +21,53 @@ void configEngines() {
   Serial.println("Motores Listos.");
 }
 
-void EngineOn() {
-  // Para PWM si lo necesitas después
-}
+// ==========================================
+// L298N: IN1,IN2 = Motor Derecho (visto desde el frente)
+//        IN3,IN4 = Motor Izquierdo (visto desde el frente)
+// Cabina invertida: adelante = LOW,HIGH | atrás = HIGH,LOW
+// ==========================================
 
 void forward() {
-  EngineOn();
-  digitalWrite(PIN_WH1, HIGH); digitalWrite(PIN_WH2, HIGH);
-  digitalWrite(PIN_WH3, LOW); digitalWrite(PIN_WH4, LOW);
+  digitalWrite(PIN_WH1, LOW);  digitalWrite(PIN_WH2, HIGH);  // Der adelante
+  digitalWrite(PIN_WH3, LOW);  digitalWrite(PIN_WH4, HIGH);  // Izq adelante
   Serial.println("Vehículo Avanzando... (FORWARD)");
 }
 
 void backward() {
-  EngineOn();
-  digitalWrite(PIN_WH1, LOW); digitalWrite(PIN_WH2, LOW);
-  digitalWrite(PIN_WH3, HIGH); digitalWrite(PIN_WH4, HIGH);
+  digitalWrite(PIN_WH1, HIGH); digitalWrite(PIN_WH2, LOW);   // Der atrás
+  digitalWrite(PIN_WH3, HIGH); digitalWrite(PIN_WH4, LOW);   // Izq atrás
   Serial.println("Vehículo Retrocediendo... (BACKWARD)");
 }
 
+// Giro a la IZQUIERDA: rueda derecha avanza, izquierda para
+void turnLeft() {
+  digitalWrite(PIN_WH1, LOW);  digitalWrite(PIN_WH2, HIGH);  // Der adelante
+  digitalWrite(PIN_WH3, LOW);  digitalWrite(PIN_WH4, LOW);   // Izq parado
+  Serial.println("Girando a la IZQUIERDA... (LEFT)");
+}
+
+// Giro a la DERECHA: rueda izquierda avanza, derecha para
+void turnRight() {
+  digitalWrite(PIN_WH1, LOW);  digitalWrite(PIN_WH2, LOW);   // Der parado
+  digitalWrite(PIN_WH3, LOW);  digitalWrite(PIN_WH4, HIGH);  // Izq adelante
+  Serial.println("Girando a la DERECHA... (RIGHT)");
+}
+
 void slow() {
-  // Velocidad reducida - usa PWM o simplemente pulsos
-  // Por ahora avanza normal (puedes implementar PWM después)
   forward();
   Serial.println("Velocidad reducida... (SLOW)");
 }
 
 void alarm() {
   stop();
-  // Activar buzzer por 2 segundos
-  digitalWrite(PIN_BUZZER, HIGH);
-  delay(500);
-  digitalWrite(PIN_BUZZER, LOW);
-  delay(200);
-  digitalWrite(PIN_BUZZER, HIGH);
-  delay(500);
-  digitalWrite(PIN_BUZZER, LOW);
-  Serial.println("ALARMA ACTIVADA!");
+  // Activar buzzer desde GPIO4
+  for (int i = 0; i < 3; i++) {
+    digitalWrite(PIN_BUZZER, HIGH);
+    delay(400);
+    digitalWrite(PIN_BUZZER, LOW);
+    delay(200);
+  }
+  Serial.println("🚨 ALARMA ACTIVADA! (GPIO4)");
 }
 
 #endif

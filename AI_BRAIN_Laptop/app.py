@@ -277,9 +277,11 @@ def api_control():
                 case 'w':
                     robot.forward()
                 case 's':
-                    robot.stop()
-                case 'a' | 'd':
-                    print(f"Giro {command} - no implementado aún")
+                    robot.backward()
+                case 'a':
+                    robot.turn_left()
+                case 'd':
+                    robot.turn_right()
         elif action == 'stop':
             robot.stop()
         return jsonify({"status": "ok", "command": command, "action": action})
@@ -288,6 +290,12 @@ def api_control():
     match action:
         case "forward":
             robot.forward()
+        case "backward":
+            robot.backward()
+        case "left":
+            robot.turn_left()
+        case "right":
+            robot.turn_right()
         case "stop":
             robot.stop()
         case "slow":
@@ -322,18 +330,19 @@ def handle_command(json_data):
     if command in ['w', 'a', 's', 'd'] and not mode_detection:
         if action == 'start':
             match command:
-                case 'w':
-                    robot.forward()
-                case 's':
-                    robot.stop()
-                case 'a' | 'd':
-                    print(f"Giro {command} - no implementado aún")
+                case 'w': robot.forward()
+                case 's': robot.backward()
+                case 'a': robot.turn_left()
+                case 'd': robot.turn_right()
         elif action == 'stop':
             robot.stop()
         return
 
     match action:
         case "forward": robot.forward()
+        case "backward": robot.backward()
+        case "left": robot.turn_left()
+        case "right": robot.turn_right()
         case "stop": robot.stop()
         case "slow": robot.slow_speed()
         case "alarm": robot.alarm_detector()

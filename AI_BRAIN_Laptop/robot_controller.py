@@ -41,7 +41,8 @@ class RobotController:
     
 
     def _send_request(self, endpoint, command): 
-        if time.time() - self.last_send < 0.5:
+        # STOP siempre se envía inmediatamente, otros comandos tienen cooldown de 100ms
+        if command != "STOP" and time.time() - self.last_send < 0.1:
             return False
 
         self.last_send = time.time()
@@ -55,6 +56,15 @@ class RobotController:
     
     def forward(self):
         return self._send_request("control", "FORWARD")
+    
+    def backward(self):
+        return self._send_request("control", "BACKWARD")
+    
+    def turn_left(self):
+        return self._send_request("control", "LEFT")
+    
+    def turn_right(self):
+        return self._send_request("control", "RIGHT")
     
     def alarm_detector(self):
         return self._send_request("control", "ALARM_ACTIVATED")
