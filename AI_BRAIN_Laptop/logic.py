@@ -1,5 +1,5 @@
 from colors_detection import colorsDetections
-
+LIMIT_EPP_TIMEOUT = 5 
 success_text = "EQUIPOS DE PROTECCIÓN Y DE SEGURIDAD DETECTADA..."
 fail_text = "NO SE DETECTÓ EQUIPOS DE PROTECCIÓN EPP. - ACTIVANDO ALARMA..."
 stop_text = "SE DETECTÓ SEÑAL DE PARE. PARANDO VEHÍCULO..."
@@ -32,38 +32,71 @@ def test_people(count_people, timeout_person, limit_timeout):
             timeout_person = limit_timeout
     return timeout_person, limit_timeout
         
+def test_movement_security(detections, timeout_epp):
+    """
+    Evalúa el entorno basándose en la jerarquía de seguridad minera/construcción.
+    detections: Diccionario con el conteo de cada clase detectada en el frame actual.
+    """
+    # Extraer conteos del diccionario (si no existe la llave, asume 0)
+    person = detections.get('person', 0)
+    hard_hat = detections.get('hard_hat', 0)
+    vest = detections.get('vest', 0)
+    animal = detections.get('animal', 0)
+    stop_sign = detections.get('stop_sign', 0)
+    arrow_left = detections.get('arrow_left', 0)
+    arrow_right = detections.get('arrow_right', 0)
+    objects = detections.get('objects', 0)
 
-def test_movement_security(count_person, count_hardhat, count_vest, detect_stop, detect_objects, timeout_epp):
-    if (count_person > 0):
-        current_frame = (count_hardhat > 0 and count_vest > 0)
+    # ==========================================
+    # PRIORIDAD 0: REVISIÓN DE EPP (SEGURIDAD INDUSTRIAL)
+    # ==========================================
+    if person > 0:
 
-        if current_frame: 
-            permission_personal = colorsDetections.green_color
+        has_epp = (hard_hat >= person) and (vest >= person)
+        if not has_epp:
+            timeout_epp += 1
+            if timeout_epp >= LIMIT_EPP_TIMEOUT:
+                print("¡ALERTA! Personal sin EPP detectado. Deteniendo operaciones y activando alarma.")
+                return colorsDetections.red_color, "ALARM", timeout_epp
+            else:
+                return colorsDetections.yellow_color, "STOP", timeout_epp
+        else:
             timeout_epp = 0
-            msg_output = success_text
-            print(msg_output)
-            
-            if detect_stop:
-                action = "STOP"
-                msg_output = stop_text
-                print(f"{msg_output}: {action}")
-                permission_personal = colorsDetections.yellow_color
-            else: 
-                # Persona con EPP detectada, reducir velocidad
-                action = "SLOW"
-                print("DISMINUYENDO LA VELOCIDAD....")
-            return permission_personal, action
-        else: 
-            timeout_epp +=1
-            permission_personal = colorsDetections.red_color
-            msg_output = fail_text
-            print(msg_output)
-            return permission_personal, "ALARM"
+    else:
+        timeout_epp = 0
+
+    # ==========================================
+    # PRIORIDAD 1: ANTI-COLISIÓN (VIDA)
+    # ==========================================
+    
+    if person > 0 or animal > 0:
+        print("Obstáculo vivo en la ruta. FRENANDO para evitar atropello.")
+        return colorsDetections.yellow_color, "STOP", timeout_epp
+
+    # ==========================================
+    # PRIORIDAD 2: SEÑALIZACIÓN Y TRÁFICO
+    # ==========================================
+    if stop_sign > 0:
+        print("Señal de PARE detectada. FRENANDO.")
+        return colorsDetections.red_color, "STOP", timeout_epp
         
-    else: 
-        if detect_objects: 
-            print("Esperando por más instrucciones...")
-            print("Se han detectado objetos en la vía.")
-            return colorsDetections.yellow_color, "STOP"
-        print(no_detection_text)
-        return colorsDetections.gray_color, "FORWARD"
+    if arrow_left > 0:
+        print("Señal de DESVÍO: Girando a la IZQUIERDA.")
+        return colorsDetections.blue_color, "LEFT", timeout_epp
+        
+    if arrow_right > 0:
+        print("Señal de DESVÍO: Girando a la DERECHA.")
+        return colorsDetections.blue_color, "RIGHT", timeout_epp
+
+    # ==========================================
+    # PRIORIDAD 3: CONDICIONES DE LA VÍA (OBSTÁCULOS)
+    # ==========================================
+    if objects > 0:
+        print("Zona de desmonte/obstáculos. Reduciendo velocidad.")
+        return colorsDetections.yellow_color, "SLOW", timeout_epp
+
+    # ==========================================
+    # PRIORIDAD 4: VÍA LIBRE
+    # ==========================================
+    print("Vía despejada. Operación normal de transporte.")
+    return colorsDetections.green_color, "FORWARD", timeout_epp

@@ -88,7 +88,9 @@ def generate_frame():
     count_hardhat = 0
     count_vest = 0
     count_vehicle = 0
+    count_stops = 0
     count_objects = 0
+    count_animals = 0
     timeout_person = 0
     timeout_epp = 0
 
@@ -96,9 +98,11 @@ def generate_frame():
         # Resetear contadores en cada frame
         count_people = 0
         count_hardhat = 0
+        count_stops = 0
         count_vest = 0
         count_vehicle = 0
         count_objects = 0
+        count_animals = 0
         detect_stop = False
         detect_objects = False
         
@@ -122,30 +126,53 @@ def generate_frame():
                 match currentClass:
                     case "person":
                         count_people +=1
-                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.blue_color,2)
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.blue_color,3)
                     case "hard-hat":
                         count_hardhat +=1
-                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.green_color, 2)
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.green_color, 3)
                     case "vest":
                         count_vest +=1
-                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.green_color,2)
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.green_color,3)
                     case "vehicle":
                         count_vehicle +=1
                         cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.black_color, 2)
                     case "stop_sign":
+                        count_stops +=1
                         detect_stop = True
-                        cv2.rectangle(frame, (x1, y1), (x2,y2), colorsDetections.red_color, 2)
+                        cv2.rectangle(frame, (x1, y1), (x2,y2), colorsDetections.red_color, 3)
                     case "objects":
                         count_objects +=1
                         detect_objects = True
                         cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.purple_color, 2)
+                    case "animal":
+                        count_animals +=1
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.yellow_color, 2)
+                    case "arrow_left":
+                        count_arrow_left +=1
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.gray_color, 2)
+                    case "arrow_right":
+                        count_arrow_right +=1
+                        cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.pink_color, 2)
                     case _: 
                         print("Lo siento, clase no especiifcada", currentClass)
 
                 cv2.putText(frame, f'{currentClass} {conf}', (x1, y1-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.5, colorsDetections.white_color, 2)
 
+        detections = {
+            'person' : count_people,
+            'hard-hat': count_hardhat,
+            'vest': count_vest,
+            'vehicle': count_vehicle,
+            'animal' : count_animals,
+            'stop_sign': count_stops,
+            "arrow_left": count_arrow_left,
+            "arrow_right": count_arrow_right,
+            'objects': count_objects
+
+        }
         timeout_person, limit_timeout = logic.test_people(count_people, timeout_person, limit_timeout)
-        permission_personal, current_action = logic.test_movement_security(count_people, count_hardhat, count_vest, detect_stop, detect_objects, timeout_epp)        
+        permission_personal, current_action = logic.test_movement_security(detections ,timeout_epp)        
+        
 
         cv2.rectangle(frame, (0,0), (640,50), colorsDetections.white_color, -1)
         cv2.putText(frame, msg_output, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
@@ -154,6 +181,7 @@ def generate_frame():
                 match current_action:
                     case "STOP":
                         robot.stop()
+                        robot.alarm_detector()
                     case "ALARM":
                         robot.stop()
                         robot.alarm_detector()

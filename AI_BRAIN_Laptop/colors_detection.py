@@ -7,3 +7,5 @@ class colorsDetections:
     white_color = (255, 255, 255)
     gray_color = (200, 200, 200)
     yellow_color = (255,255,0)
+    skyblue_color = (135,206,235)
+    pink_color = (255,105,180)
