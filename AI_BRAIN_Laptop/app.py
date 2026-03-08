@@ -90,6 +90,8 @@ def generate_frame():
     count_vehicle = 0
     count_stops = 0
     count_objects = 0
+    count_arrow_left = 0
+    count_arrow_right = 0
     count_animals = 0
     timeout_person = 0
     timeout_epp = 0
@@ -101,6 +103,8 @@ def generate_frame():
         count_stops = 0
         count_vest = 0
         count_vehicle = 0
+        count_arrow_left = 0
+        count_arrow_right = 0
         count_objects = 0
         count_animals = 0
         detect_stop = False
@@ -171,7 +175,7 @@ def generate_frame():
 
         }
         timeout_person, limit_timeout = logic.test_people(count_people, timeout_person, limit_timeout)
-        permission_personal, current_action = logic.test_movement_security(detections ,timeout_epp)        
+        msg_output, permission_personal, current_action, timeout_epp = logic.test_movement_security(detections ,timeout_epp)        
         
 
         cv2.rectangle(frame, (0,0), (640,50), colorsDetections.white_color, -1)

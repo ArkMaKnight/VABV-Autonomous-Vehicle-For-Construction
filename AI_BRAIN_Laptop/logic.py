@@ -71,32 +71,32 @@ def test_movement_security(detections, timeout_epp):
     
     if person > 0 or animal > 0:
         print("Obstáculo vivo en la ruta. FRENANDO para evitar atropello.")
-        return colorsDetections.yellow_color, "STOP", timeout_epp
+        return "PARADO PARA EVITAR ACCIDENTE", colorsDetections.yellow_color, "STOP", timeout_epp
 
     # ==========================================
     # PRIORIDAD 2: SEÑALIZACIÓN Y TRÁFICO
     # ==========================================
     if stop_sign > 0:
         print("Señal de PARE detectada. FRENANDO.")
-        return colorsDetections.red_color, "STOP", timeout_epp
+        return "PARADO POR SEÑAL", colorsDetections.red_color, "STOP", timeout_epp
         
     if arrow_left > 0:
         print("Señal de DESVÍO: Girando a la IZQUIERDA.")
-        return colorsDetections.blue_color, "LEFT", timeout_epp
+        return "GIRANDO IZQUIERDA", colorsDetections.blue_color, "LEFT", timeout_epp
         
     if arrow_right > 0:
         print("Señal de DESVÍO: Girando a la DERECHA.")
-        return colorsDetections.blue_color, "RIGHT", timeout_epp
+        return "GIRADO DERECHA", colorsDetections.blue_color, "RIGHT", timeout_epp
 
     # ==========================================
     # PRIORIDAD 3: CONDICIONES DE LA VÍA (OBSTÁCULOS)
     # ==========================================
     if objects > 0:
         print("Zona de desmonte/obstáculos. Reduciendo velocidad.")
-        return colorsDetections.yellow_color, "SLOW", timeout_epp
+        return "BAJANDO VELOCIDAD" ,colorsDetections.yellow_color, "SLOW", timeout_epp
 
     # ==========================================
     # PRIORIDAD 4: VÍA LIBRE
     # ==========================================
     print("Vía despejada. Operación normal de transporte.")
-    return colorsDetections.green_color, "FORWARD", timeout_epp
+    return "AVANZANDO...", colorsDetections.green_color, "FORWARD", timeout_epp
