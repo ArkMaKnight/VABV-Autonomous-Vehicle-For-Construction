@@ -5,10 +5,11 @@
 
 // Pin para buzzer/alarma en GPIO4
 #define PIN_BUZZER 4
+int current_speed = 255;
 
 void stop() {
-  digitalWrite(PIN_WH1, LOW); digitalWrite(PIN_WH2, LOW);   // Motor izq parado
-  digitalWrite(PIN_WH3, LOW); digitalWrite(PIN_WH4, LOW);   // Motor der parado
+  analogWrite(PIN_WH1, 0); analogWrite(PIN_WH2, 0);   // Motor izq parado
+  analogWrite(PIN_WH3, 0); analogWrite(PIN_WH4, 0);   // Motor der parado
   Serial.println("Vehículo detenido. (STOP)");
 }
 
@@ -21,6 +22,10 @@ void configEngines() {
   Serial.println("Motores Listos.");
 }
 
+void EngineOn() {
+  // Para PWM si lo necesitas después
+}
+
 // ==========================================
 // L298N: IN1,IN2 = Motor Derecho (visto desde el frente)
 //        IN3,IN4 = Motor Izquierdo (visto desde el frente)
@@ -28,33 +33,42 @@ void configEngines() {
 // ==========================================
 
 void forward() {
-  digitalWrite(PIN_WH1, LOW);  digitalWrite(PIN_WH2, HIGH);  // Der adelante
-  digitalWrite(PIN_WH3, LOW);  digitalWrite(PIN_WH4, HIGH);  // Izq adelante
+  EngineOn();
+  analogWrite(PIN_WH1, 0);  analogWrite(PIN_WH2, current_speed);  // Der adelante
+  analogWrite(PIN_WH3, 0);  analogWrite(PIN_WH4, current_speed);  // Izq adelante
   Serial.println("Vehículo Avanzando... (FORWARD)");
 }
 
 void backward() {
-  digitalWrite(PIN_WH1, HIGH); digitalWrite(PIN_WH2, LOW);   // Der atrás
-  digitalWrite(PIN_WH3, HIGH); digitalWrite(PIN_WH4, LOW);   // Izq atrás
+  EngineOn();
+  analogWrite(PIN_WH1, current_speed); analogWrite(PIN_WH2, 0);   // Der atrás
+  analogWrite(PIN_WH3, current_speed); analogWrite(PIN_WH4, 0);   // Izq atrás
   Serial.println("Vehículo Retrocediendo... (BACKWARD)");
 }
 
 // Giro a la IZQUIERDA: rueda derecha avanza, izquierda para
 void turnLeft() {
-  digitalWrite(PIN_WH1, LOW);  digitalWrite(PIN_WH2, HIGH);  // Der adelante
-  digitalWrite(PIN_WH3, LOW);  digitalWrite(PIN_WH4, LOW);   // Izq parado
+  EngineOn();
+  analogWrite(PIN_WH1, 0);  analogWrite(PIN_WH2, current_speed);  // Der adelante
+  analogWrite(PIN_WH3, 0);  analogWrite(PIN_WH4, 0);   // Izq parado
   Serial.println("Girando a la IZQUIERDA... (LEFT)");
 }
 
 // Giro a la DERECHA: rueda izquierda avanza, derecha para
 void turnRight() {
-  digitalWrite(PIN_WH1, LOW);  digitalWrite(PIN_WH2, LOW);   // Der parado
-  digitalWrite(PIN_WH3, LOW);  digitalWrite(PIN_WH4, HIGH);  // Izq adelante
+  EngineOn();
+  analogWrite(PIN_WH1, 0);  analogWrite(PIN_WH2, 0);   // Der parado
+  analogWrite(PIN_WH3, 0);  analogWrite(PIN_WH4, current_speed);  // Izq adelante
   Serial.println("Girando a la DERECHA... (RIGHT)");
 }
 
+void acelerate() {
+  current_speed = 255;
+  Serial.println("Velocidad aumentada al máximo...");
+}
+
 void slow() {
-  forward();
+  current_speed = 150;
   Serial.println("Velocidad reducida... (SLOW)");
 }
 

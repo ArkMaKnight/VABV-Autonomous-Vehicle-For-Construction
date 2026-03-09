@@ -137,6 +137,18 @@ void handleControl() {
   else if (action == "ALARM_ACTIVATED") {
     alarm();
     server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Alarma activada\"}");
+  } 
+  else if (action == "SPEED") {
+    int new_speed = doc["value"] | 255;
+    if (new_speed < 0) new_speed = 0;
+    if (new_speed > 255) new_speed = 255;
+
+    if(new_speed = 255) acelerate();
+    if(new_speed = 150) slow();
+    current_speed = new_speed;
+    Serial.println("Nueva velocidad: " + String(current_speed));
+    server.send(200, "application/json", "{\"status\":\"ok\", \"msg\":\"Cambio velocidad\"}");
+
   }
   else {
     Serial.println("❌ Comando desconocido: " + action);
