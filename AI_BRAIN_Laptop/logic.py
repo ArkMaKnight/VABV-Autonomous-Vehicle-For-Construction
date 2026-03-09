@@ -57,9 +57,9 @@ def test_movement_security(detections, timeout_epp):
             timeout_epp += 1
             if timeout_epp >= LIMIT_EPP_TIMEOUT:
                 print("¡ALERTA! Personal sin EPP detectado. Deteniendo operaciones y activando alarma.")
-                return colorsDetections.red_color, "ALARM", timeout_epp
+                return "PERSONA(S) SIN EPP DETECTADA AL FRENTE", colorsDetections.red_color, "ALARM", timeout_epp
             else:
-                return colorsDetections.yellow_color, "STOP", timeout_epp
+                return "PERSONA(S) CON EPP DETECTADA AL FRENTE", colorsDetections.yellow_color, "STOP", timeout_epp
         else:
             timeout_epp = 0
     else:

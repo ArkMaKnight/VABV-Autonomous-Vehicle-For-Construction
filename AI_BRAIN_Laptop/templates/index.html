@@ -89,6 +89,11 @@
         <div class="ctrl-actions">
             <button class="ctrl-btn action-btn" id="btn-alarm">🚨 Alarma</button>
             <button class="ctrl-btn action-btn stop-btn" id="btn-stop">⛔ STOP</button>
+            <button class="ctrl-btn action-btn slow-btn" id="slow-btn">🔽 Bajar Velocidad</button>
+        </div>
+        <div class="speed-control">
+            <label for="speedSlider">Acelerador (PWM): <span id="speedValue">255</span> </label>
+            <input type="range" id="speedSlider" min="0" max="255" value="255">
         </div>
     </div>
     </main>
@@ -114,8 +119,8 @@
 <footer>
     <div class="status">
         <ul>
-            <li class="status-conx"><img src="{{ url_for('static', filename='img/offline_icon.svg') }}" width="10px">&nbsp; <span id="camera-status">Conexión Cámara</span></li>
-            <li class="status-conx"><img src="{{ url_for('static', filename='img/offline_icon.svg') }}" width="10px">&nbsp;<span id="wheels-status">Conexión Ruedas</span></li>
+            <li class="status-conx"><img id="camera-icon" src="{{ url_for('static', filename='img/offline_icon.svg') }}" width="10px">&nbsp; <span id="camera-status">Conexión Cámara</span></li>
+            <li class="status-conx"><img id="wheels-icon" src="{{ url_for('static', filename='img/offline_icon.svg') }}" width="10px">&nbsp;<span id="wheels-status">Conexión Ruedas</span></li>
             <li class="status-conx"><img src="{{ url_for('static', filename='img/offline_icon.svg') }}" width="10px">&nbsp;<span id="latency-status"></span>Tasa de Frames</li>
             <li class="status-conx2">Tiempo Activo: <span id="metric-uptime">00:00:00</span></li>
             <li class="status-conx2">Latencia: <span id="metric-latency">0</span>ms</li>

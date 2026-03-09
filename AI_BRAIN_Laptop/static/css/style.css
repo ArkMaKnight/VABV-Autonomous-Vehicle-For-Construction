@@ -1,10 +1,10 @@
 * {
     box-sizing: border-box;
-    background-color: rgb(12, 0, 16);
-    margin: 0%;
+    margin: 0;
 }
 
 :root {
+    --orange-color: rgb(255, 77, 0);
     --dark-background: rgb(0, 0, 0);
     --light-background: rgb(255,255,255);
     --cards-color: rgb(179, 181, 183);
@@ -24,7 +24,7 @@ body {
         "nav nav nav"
         "sidebar main info"
         "footer footer footer";
-    background-color: #000000;
+    background-color: #0a0a14;
     color: #cbd5e1;
     font-family: "Courier";
     transition: grid-template-columns 0.3s cubic-bezier(.4,0,.2,1);
@@ -33,11 +33,12 @@ body {
 nav {
    grid-area: nav;
    gap: 1rem;
-   background-color: #0e0e0e;
+   background-color: #0e0e18;
    align-items: center;
    display: flex;
    text-align: left;
    justify-content: left;
+   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .nav-img-txt {
@@ -59,6 +60,10 @@ nav .logo {
     background-color: rgb(25, 25, 25);
     padding: 0.5rem;
     border-radius: 0.8rem;
+}
+
+nav span, nav img, nav button {
+    background-color: transparent;
 }
 
 nav span {
@@ -240,6 +245,9 @@ nav span {
     background: var(--alert-color);
 }
 
+.slow-btn {
+    background: var(--orange-color);
+}
 .stop-btn:hover {
     background: #b91c1c;
 }
@@ -284,25 +292,26 @@ main {
 footer {
     grid-area: footer;
     font-family: "Share Tech";
+    background-color: #0a0a14;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 0.5rem;
 }
 
 .card {
     margin: 1rem;
     height: auto;
-    background-color: var(--cards-color);
+    background-color: #151525;
     padding: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 0.6rem;
-    box-shadow: 
-    0 10px 5px rgba(85, 85, 85, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .video-card {
     position: relative;
     overflow: hidden;
     transition: transform 0.3s ease;
-    background-color: grey;
+    background-color: #111;
 }
 .video-card #video-trans {
     width: 100%;
@@ -331,18 +340,27 @@ footer {
     border-radius: 1.2rem 0.1rem;
 }
 
-.video-span span {
+.video-span span, .video-span img {
     background-color: transparent;
     font-family: "Jersey 25";
 }
 
 #epp {
-    background-color: var(--dark-background);
-    display: grid;
-    color: var(--text-alarm);
-    text-align: center;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    box-shadow: 0px 20px -50px rgb(174, 47, 8, 0.8);
+    text-align: center;
+    padding: 1rem 1.2rem;
+    border-radius: 0.8rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    min-height: 56px;
+    border: 2px solid rgba(255,255,255,0.08);
+    margin-top: 1rem;
+    transition: all 0.4s ease;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #8892a4;
+    letter-spacing: 0.3px;
 }
 .card-conx {
     background-color: rgba(6, 227, 10, 0.504);
@@ -354,15 +372,24 @@ footer {
 .status-conx2 {
     background-color: rgb(4, 24, 69);
     text-decoration: none;
-    padding: 0.3rem;
+    padding: 0.3rem 0.6rem;
     list-style-type: none;
+    border-radius: 0.3rem;
+    font-size: 0.85rem;
 }
 
-.status-conx {
-    background-color: rgb(125, 4, 28);
+.status-conx2 {
+    background-color: rgb(4, 24, 69);
     text-decoration: none;
-    padding: 0.3rem;
+    padding: 0.3rem 0.6rem;
     list-style-type: none;
+    border-radius: 0.3rem;
+    font-size: 0.85rem;
+}
+
+.status-conx img, .status-conx span,
+.status-conx2 span {
+    background-color: transparent;
 }
 
 .card-conx img {
@@ -372,9 +399,10 @@ footer {
 
 
 .info {
-    background-color: rgb(51, 52, 52);
+    background-color: #0d0d1a;
     padding: 1rem;
     border-radius: 2rem;
+    border-left: 1px solid rgba(255,255,255,0.06);
 }
 
 .txt-sections {
@@ -384,17 +412,28 @@ footer {
     font-size: 1.4rem;
     border-radius: 0.5rem;
     padding-block: 0.5rem;
+    background-color: transparent;
+    color: #cbd5e1;
+}
+
+.txt-sections img {
+    background-color: transparent;
 }
 
 
 
 .card-chart {
-    box-shadow: 0px 10px 60px -15px rgba(220, 219, 216, 0.8);
-    background-color: #b3b5b7;
-    width: 1fr;
-    height: 15rem;
+    background-color: #151525;
+    width: 100%;
+    height: 16rem;
     margin-block: 1rem;
     border-radius: 1rem;
+    padding: 0.8rem;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.card-chart canvas {
+    background-color: transparent !important;
 }
 
 .card img {
@@ -405,6 +444,37 @@ footer ul {
     padding-top: 1rem;
     gap: 2rem;
     display: flex;
-    orientation: landscape;
-    background-color: black;
+    flex-wrap: wrap;
+    background-color: transparent;
+    list-style: none;
+    padding-left: 1rem;
+}
+
+.speed-control {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: transparent;
+    text-align: center;
+}
+
+.speed-control label {
+    background: transparent;
+    color: #a0aec0;
+    font-size: 0.85rem;
+}
+
+.speed-control span {
+    background: transparent;
+    color: #0080ff;
+    font-weight: bold;
+}
+
+.speed-control input[type="range"] {
+    width: 100%;
+    margin-top: 0.5rem;
+    accent-color: #0080ff;
+}
+
+.sidebar label, .sidebar img {
+    background-color: transparent;
 }

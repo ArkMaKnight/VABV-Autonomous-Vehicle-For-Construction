@@ -62,6 +62,7 @@ count_hardhat = 0
 count_vest = 0
 count_vehicle = 0
 count_objects = 0
+count_animals = 0
 timeout_person = 0
 timeout_epp = 0
 limit_timeout = 5
@@ -82,6 +83,7 @@ def generate_frame():
     global scan_epp, detect_stop, detect_objects
     global count_people, count_hardhat, count_vest,count_vehicle, count_objects 
     global timeout_person, limit_timeout, timeout_epp
+    global msg_output, current_action, count_animals
 
 
     count_people = 0
@@ -176,23 +178,21 @@ def generate_frame():
         }
         timeout_person, limit_timeout = logic.test_people(count_people, timeout_person, limit_timeout)
         msg_output, permission_personal, current_action, timeout_epp = logic.test_movement_security(detections ,timeout_epp)        
-        
-
-        cv2.rectangle(frame, (0,0), (640,50), colorsDetections.white_color, -1)
-        cv2.putText(frame, msg_output, (10,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, permission_personal, 2)
 
         if robot is not None and current_action != last_command_sent and mode_detection:
                 match current_action:
                     case "STOP":
                         robot.stop()
-                        robot.alarm_detector()
                     case "ALARM":
-                        robot.stop()
                         robot.alarm_detector()
                     case "FORWARD":
                         robot.forward()
                     case "SLOW":
                         robot.slow_speed()
+                    case "RIGHT":
+                        robot.turn_right()
+                    case "LEFT":
+                        robot.turn_left()
                 last_command_sent = current_action
 
         ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
@@ -205,22 +205,44 @@ def generate_frame():
         buffer.tobytes() + b'\r\n')
 
 def data_simulated():
-    while True:  # ✅ Agregar loop infinito
+    while True:
         if DATA_SIMULATED:
+            person = random.randint(0, 3)
+            hard_hat = random.randint(0, person)
+            vest = random.randint(0, person)
+            animal = random.choice([0, 0, 0, 1])
+            objects = random.choice([0, 0, 0, 1])
+
+            # Simular lógica de detección
+            if person > 0 and (hard_hat < person or vest < person):
+                sim_msg = "PERSONA(S) SIN EPP DETECTADA"
+                sim_action = "ALARM"
+            elif person > 0 or animal > 0:
+                sim_msg = "PARADO PARA EVITAR ACCIDENTE"
+                sim_action = "STOP"
+            elif objects > 0:
+                sim_msg = "BAJANDO VELOCIDAD"
+                sim_action = "SLOW"
+            else:
+                sim_msg = "AVANZANDO..."
+                sim_action = "FORWARD"
+
             data = {
-                "person": random.randint(0, 3),
-                "vest": random.randint(0, 2),
-                "hard_hat": random.randint(0, 2),
-                "camara_connected": camera is not None,
+                "person": person,
+                "vest": vest,
+                "hard_hat": hard_hat,
+                "camera_connected": False,
                 "wheels_connected": False,
                 "latency": random.randint(10, 100),
-                "animal": 0,
-                "objects": 0,
-                "uptime": get_uptime(),  # ✅ Calcular uptime real
-                "packet_loss": random.randint(0, 5)
+                "animal": animal,
+                "objects": objects,
+                "uptime": get_uptime(),
+                "packet_loss": random.randint(0, 5),
+                "msg_output": sim_msg,
+                "current_action": sim_action
             }
             socketio.emit('update_dashboard', data)
-        time.sleep(1)  # ✅ Mover DENTRO del while
+        time.sleep(1)
 
 
 
@@ -247,19 +269,18 @@ def background_telemetry():
         last_emit_time = current_time
         
         data = {
-            "safe": 0,
-            "no_safe": 0,
-            "fps": 0,
-            "alarms": logic.test_security({
-                'person': count_people,
-                'hard_hat': count_hardhat,
-                'vest': count_vest}),
-            "persons": count_people,
+            "person": count_people,
+            "hard_hat": count_hardhat,
+            "vest": count_vest,
+            "animal": count_animals,
+            "objects": count_objects,
+            "camera_connected": state_camera,
+            "wheels_connected": state_wheels,
             "uptime": uptime_str,
             "latency": latency_ms,
-            "packet_loss": 0,  
-            "state_wheels": state_wheels,
-            "camera_connection": state_camera != None
+            "packet_loss": 0,
+            "msg_output": msg_output,
+            "current_action": current_action
         }
         socketio.emit('update_dashboard', data)
         time.sleep(1)
@@ -339,6 +360,13 @@ def api_control():
             return jsonify({"status": "error", "msg": f"Acción desconocida: {action}"}), 400
 
     return jsonify({"status": "ok", "action": action})
+
+@socketio.on("speed_change")
+def handle_speed(data): 
+    speed_value = data.get('speed', 255)
+    print(f"Cambio de velocidad: {speed_value}")
+    if robot is not None: 
+        robot.set_speed(speed_value)
 
 @socketio.on('control_command')
 def handle_command(json_data):

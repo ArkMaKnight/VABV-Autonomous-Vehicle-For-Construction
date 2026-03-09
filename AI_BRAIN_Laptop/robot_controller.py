@@ -50,6 +50,19 @@ class RobotController:
         thread.start()
 
         return True
+    def set_speed(self, speed_value):
+        speed_value = max(0, min(255, int(speed_value)))
+        url = f"{self.base_url}/control"
+        payload = {
+            "action": "SPEED",
+            "value": speed_value,
+            "auth": self.api_key
+        }
+        try: 
+            requests.post(url, json=payload, timeout=0.5)
+            return True
+        except:
+            return False
 
     def stop(self):
         return self._send_request("control", "STOP")

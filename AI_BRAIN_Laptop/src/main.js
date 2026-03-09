@@ -61,9 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
       wheelsIcon.src = d.wheels_connected ? ICONS.online : ICONS.offline;
       wheelsStatus.textContent = d.wheels_connected ? 'Ruedas Conectadas' : 'Ruedas Desconectadas';
     }
-  if (d.hard_hat >= d.person && d.vest >= d.person) {
+  if (d.msg_output && d.current_action) {
+    ui.updateStatus(d.msg_output, d.current_action);
+  } else if (d.hard_hat >= d.person && d.vest >= d.person) {
     ui.normalStatus();
-
   } else {
     ui.detectAlarm();
   }
@@ -158,6 +159,21 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-stop')?.addEventListener('click', () => {
     sendControl({ action: 'stop' });
   });
+
+    document.getElementById('slow-btn')?.addEventListener('click', () => {
+    sendControl({ action: 'slow' });
+  });
+
+  // Slider de velocidad
+  const speedSlider = document.getElementById("speedSlider");
+  const speedDisplay = document.getElementById("speedValue");
+  if (speedSlider) {
+    speedSlider.addEventListener('input', e => {
+      const speed = e.target.value;
+      if (speedDisplay) speedDisplay.innerText = speed;
+      socket.emit('speed_change', {speed: speed});
+    });
+  }
 });
 
 // Control por teclado
