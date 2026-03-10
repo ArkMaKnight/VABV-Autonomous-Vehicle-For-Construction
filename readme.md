@@ -36,7 +36,6 @@
 9. [API y Endpoints](#api-y-endpoints)
 10. [Lógica de Seguridad](#lógica-de-seguridad)
 11. [Hardware](#hardware)
-12. [Autores](#autores)
 
 ---
 
@@ -373,26 +372,6 @@ Prioridad 4 — Operación Normal
 | Formato | JPEG |
 | Puerto streaming | 81 |
 | Puerto control | 80 |
-
----
-
-## Autores
-
-### Estudiantes
-
-| Nombre | Universidad | Correo |
-|---|---|---|
-| David Campos Mines | Universidad Nacional de Cajamarca | [dcamposm23_1@unc.edu.pe](mailto:dcamposm23_1@unc.edu.pe) |
-| Carlo F. Díaz Rodríguez | Universidad Nacional de Cajamarca | [cdiazr23_1@unc.edu.pe](mailto:cdiazr23_1@unc.edu.pe) |
-| Víctor A. Marín Alcalde | Universidad Nacional de Cajamarca | [vmarina23_2@unc.edu.pe](mailto:vmarina23_2@unc.edu.pe) |
-| Harold A. Ramos Callirgos | Universidad Nacional de Cajamarca | [hramosc23_1@unc.edu.pe](mailto:hramosc23_1@unc.edu.pe) |
-| Witman D. Saldaña Vargas | Universidad Nacional de Cajamarca | [wsaldanav23_1@unc.edu.pe](mailto:wsaldanav23_1@unc.edu.pe) |
-
-### Docente
-
-| Nombre | Universidad | Correo |
-|---|---|---|
-| Nestor E. Muñoz Abanto | Universidad Nacional de Cajamarca | [nestor.munoz@unc.edu.pe](mailto:nestor.munoz@unc.edu.pe) |
 
 ---
 
