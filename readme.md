@@ -380,26 +380,25 @@ Prioridad 4 — Operación Normal
 
 ### 🎓 Estudiantes
 
-| Nombre | Escuela | Universidad | Correo |
-|---|---|---|---|
-| David Campos Mines | Ingeniería de Sistemas | Universidad Nacional de Cajamarca | [dcamposm23_1@unc.edu.pe](mailto:dcamposm23_1@unc.edu.pe) |
-| Carlo F. Díaz Rodríguez | Ingeniería de Sistemas | Universidad Nacional de Cajamarca | [cdiazr23_1@unc.edu.pe](mailto:cdiazr23_1@unc.edu.pe) |
-| Víctor A. Marín Alcalde | Ingeniería de Sistemas | Universidad Nacional de Cajamarca | [vmarina23_2@unc.edu.pe](mailto:vmarina23_2@unc.edu.pe) |
-| Harold A. Ramos Callirgos | Ingeniería de Sistemas | Universidad Nacional de Cajamarca | [hramosc23_1@unc.edu.pe](mailto:hramosc23_1@unc.edu.pe) |
-| Witman D. Saldaña Vargas | Ingeniería de Sistemas | Universidad Nacional de Cajamarca | [wsaldanav23_1@unc.edu.pe](mailto:wsaldanav23_1@unc.edu.pe) |
+| Nombre | Universidad | Correo |
+|---|---|---|
+| David Campos Mines | Universidad Nacional de Cajamarca | [dcamposm23_1@unc.edu.pe](mailto:dcamposm23_1@unc.edu.pe) |
+| Carlo F. Díaz Rodríguez | Universidad Nacional de Cajamarca | [cdiazr23_1@unc.edu.pe](mailto:cdiazr23_1@unc.edu.pe) |
+| Víctor A. Marín Alcalde | Universidad Nacional de Cajamarca | [vmarina23_2@unc.edu.pe](mailto:vmarina23_2@unc.edu.pe) |
+| Harold A. Ramos Callirgos | Universidad Nacional de Cajamarca | [hramosc23_1@unc.edu.pe](mailto:hramosc23_1@unc.edu.pe) |
+| Witman D. Saldaña Vargas | Universidad Nacional de Cajamarca | [wsaldanav23_1@unc.edu.pe](mailto:wsaldanav23_1@unc.edu.pe) |
 
 ### 👨‍🏫 Docente
 
-| Nombre | Escuela | Universidad | Sede | Correo |
-|---|---|---|---|---|
-| Nestor E. Muñoz Abanto | Ingeniería de Sistemas | Universidad Nacional de Cajamarca | Cajamarca, Perú | [nestor.munoz@unc.edu.pe](mailto:nestor.munoz@unc.edu.pe) |
+| Nombre | Universidad | Correo |
+|---|---|---|
+| Nestor E. Muñoz Abanto | Universidad Nacional de Cajamarca | [nestor.munoz@unc.edu.pe](mailto:nestor.munoz@unc.edu.pe) |
 
 ---
 
 <div align="center">
 
 *Desarrollado como Proyecto Final para el curso **Tópicos Especiales en Sistemas Inteligentes** (11Q252)*  
-*Escuela Profesional de Ingeniería de Sistemas — **Universidad Nacional de Cajamarca**, Cajamarca, Perú*  
-*Docente: **Nestor E. Muñoz Abanto***
+*Universidad Nacional de Cajamarca — Cajamarca, Perú*
 
 </div> 
