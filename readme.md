@@ -1,4 +1,4 @@
-# 🤖 Carrito EPP-Core — Vehículo Autónomo de Verificación de EPP
+# Carrito EPP-Core — Vehículo Autónomo de Verificación de EPP
 
 <div align="center">
 
@@ -12,35 +12,35 @@
 
 | Campo | Detalle |
 |---|---|
-| 📚 **Curso** | Tópicos Especiales en Sistemas Inteligentes |
-| 🔢 **Código** | 11Q252 |
-| 🏫 **Universidad** | Universidad Nacional de Cajamarca |
-| 📍 **Sede** | Cajamarca, Perú |
-| 👨‍🏫 **Docente** | Nestor E. Muñoz Abanto |
-| 👥 **Estudiantes** | David Campos Mines · Carlo F. Díaz Rodríguez · Víctor A. Marín Alcalde · Harold A. Ramos Callirgos · Witman D. Saldaña Vargas |
+| **Curso** | Tópicos Especiales en Sistemas Inteligentes |
+| **Código** | 11Q252 |
+| **Universidad** | Universidad Nacional de Cajamarca |
+| **Sede** | Cajamarca, Perú |
+| **Docente** | Nestor E. Muñoz Abanto |
+| **Estudiantes** | David Campos Mines · Carlo F. Díaz Rodríguez · Víctor A. Marín Alcalde · Harold A. Ramos Callirgos · Witman D. Saldaña Vargas |
 
 </div>
 
 ---
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
-1. [Descripción General](#-descripción-general)
-2. [Características Principales](#-características-principales)
-3. [Arquitectura del Sistema](#-arquitectura-del-sistema)
-4. [Tecnologías Utilizadas](#-tecnologías-utilizadas)
-5. [Estructura del Proyecto](#-estructura-del-proyecto)
-6. [Requisitos Previos](#-requisitos-previos)
-7. [Instalación y Configuración](#-instalación-y-configuración)
-8. [Uso del Sistema](#-uso-del-sistema)
-9. [API y Endpoints](#-api-y-endpoints)
-10. [Lógica de Seguridad](#-lógica-de-seguridad)
-11. [Hardware](#-hardware)
-12. [Autores](#-autores)
+1. [Descripción General](#descripción-general)
+2. [Características Principales](#características-principales)
+3. [Arquitectura del Sistema](#arquitectura-del-sistema)
+4. [Tecnologías Utilizadas](#tecnologías-utilizadas)
+5. [Estructura del Proyecto](#estructura-del-proyecto)
+6. [Requisitos Previos](#requisitos-previos)
+7. [Instalación y Configuración](#instalación-y-configuración)
+8. [Uso del Sistema](#uso-del-sistema)
+9. [API y Endpoints](#api-y-endpoints)
+10. [Lógica de Seguridad](#lógica-de-seguridad)
+11. [Hardware](#hardware)
+12. [Autores](#autores)
 
 ---
 
-## 🎯 Descripción General
+## Descripción General
 
 **Carrito EPP-Core** es un sistema de vehículo autónomo inteligente diseñado para entornos industriales, mineros y de construcción. Su objetivo principal es **verificar el uso correcto del Equipo de Protección Personal (EPP)** por parte de los trabajadores, además de navegar de forma segura detectando obstáculos, señales de tráfico y personas.
 
@@ -52,19 +52,19 @@ El sistema integra:
 
 ---
 
-## ✨ Características Principales
+## Características Principales
 
-- 🦺 **Verificación de EPP**: Detecta si los trabajadores usan casco y chaleco de seguridad.
-- 🚨 **Alarma automática**: Activa una alarma sonora ante incumplimiento de EPP.
-- 🛑 **Anticolisión**: Detiene el vehículo ante personas u obstáculos en su trayecto.
-- 🚦 **Reconocimiento de señales**: Interpreta señales de detención y flechas direccionales.
-- 🎮 **Modo manual y autónomo**: Alternancia entre control WASD por operador y conducción autónoma por IA.
-- 📊 **Dashboard en tiempo real**: Estadísticas de detección, velocidad y telemetría vía WebSocket.
-- 📷 **Video en vivo**: Transmisión MJPEG desde la cámara ESP32.
+- **Verificación de EPP**: Detecta si los trabajadores usan casco y chaleco de seguridad.
+- **Alarma automática**: Activa una alarma sonora ante incumplimiento de EPP.
+- **Anticolisión**: Detiene el vehículo ante personas u obstáculos en su trayecto.
+- **Reconocimiento de señales**: Interpreta señales de detención y flechas direccionales.
+- **Modo manual y autónomo**: Alternancia entre control WASD por operador y conducción autónoma por IA.
+- **Panel de control en tiempo real**: Estadísticas de detección, velocidad y telemetría vía WebSocket.
+- **Video en vivo**: Transmisión MJPEG desde la cámara ESP32.
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -98,7 +98,7 @@ El sistema integra:
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 ### Backend (Python)
 | Librería | Versión | Uso |
@@ -128,12 +128,12 @@ El sistema integra:
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 Carrito-EPP-Core/
 │
-├── AI_BRAIN_Laptop/                 # 🧠 Módulo principal (servidor + IA)
+├── AI_BRAIN_Laptop/                 # Módulo principal (servidor + IA)
 │   ├── modelos/
 │   │   └── model_best.pt            # Modelo YOLOv8 entrenado (EPP, señales, obstáculos)
 │   ├── src/                         # Código fuente frontend (Vite)
@@ -157,7 +157,7 @@ Carrito-EPP-Core/
 │   ├── package.json                 # Dependencias Node.js
 │   └── vite.config.js               # Configuración del bundler Vite
 │
-├── Firmware_Vehicle/                # ⚙️ Firmware embebido (ESP32-CAM)
+├── Firmware_Vehicle/                # Firmware embebido (ESP32-CAM)
 │   ├── Firmware_Vehicle.ino         # Sketch principal de Arduino
 │   ├── config.h                     # Pines GPIO, credenciales WiFi, config cámara
 │   ├── engine.h                     # Control PWM de motores y buzzer
@@ -169,7 +169,7 @@ Carrito-EPP-Core/
 
 ---
 
-## ✅ Requisitos Previos
+## Requisitos Previos
 
 ### Software
 - **Python** 3.10 o superior
@@ -187,7 +187,7 @@ Carrito-EPP-Core/
 
 ---
 
-## 🚀 Instalación y Configuración
+## Instalación y Configuración
 
 ### 1. Clonar el Repositorio
 
@@ -232,7 +232,7 @@ API_KEY=TESI_VEHAUT2025WAHFD
 ENDPOINT_VIDEO=/stream
 ```
 
-> ⚠️ **Nota:** Reemplazar `<IP_DEL_ESP32>` con la dirección IP asignada al ESP32 en la red WiFi local.
+> **Nota:** Reemplazar `<IP_DEL_ESP32>` con la dirección IP asignada al ESP32 en la red WiFi local.
 
 ### 5. Cargar Firmware en el ESP32
 
@@ -247,7 +247,7 @@ ENDPOINT_VIDEO=/stream
 
 ---
 
-## ▶️ Uso del Sistema
+## Uso del Sistema
 
 ### Iniciar el servidor (modo producción)
 
@@ -285,7 +285,7 @@ El servidor de desarrollo Vite correrá en: **`http://0.0.0.0:5173`**
 
 ---
 
-## 🌐 API y Endpoints
+## API y Endpoints
 
 ### Flask (Servidor Principal)
 
@@ -323,36 +323,36 @@ POST /api/control
 
 ---
 
-## 🔐 Lógica de Seguridad
+## Lógica de Seguridad
 
 El módulo `logic.py` implementa una **jerarquía de prioridades** evaluada en cada frame de video:
 
 ```
 Prioridad 0 — Verificación de EPP
   └─ ¿Hay personas sin casco O sin chaleco?
-     └─ SÍ → ALARMA 🚨
+     └─ SÍ → ALARMA
 
 Prioridad 1 — Anticolisión
   └─ ¿Hay personas O animales detectados?
-     └─ SÍ → DETENER 🛑
+     └─ SÍ → DETENER
 
 Prioridad 2 — Señales de Tráfico
-  └─ ¿Señal de stop detectada? → DETENER 🔴
-  └─ ¿Flecha izquierda/derecha? → GIRAR ↔️
+  └─ ¿Señal de stop detectada? → DETENER
+  └─ ¿Flecha izquierda/derecha? → GIRAR
 
 Prioridad 3 — Obstáculos
   └─ ¿Objetos en el camino?
-     └─ SÍ → REDUCIR VELOCIDAD ⚠️
+     └─ SÍ → REDUCIR VELOCIDAD
 
 Prioridad 4 — Operación Normal
-  └─ Camino despejado → AVANZAR ✅
+  └─ Camino despejado → AVANZAR
 ```
 
 > Esta lógica garantiza que la seguridad de las personas siempre tenga precedencia sobre cualquier otro objetivo de navegación.
 
 ---
 
-## ⚙️ Hardware
+## Hardware
 
 ### Diagrama de Pines ESP32-CAM + L298N
 
@@ -376,9 +376,9 @@ Prioridad 4 — Operación Normal
 
 ---
 
-## 👥 Autores
+## Autores
 
-### 🎓 Estudiantes
+### Estudiantes
 
 | Nombre | Universidad | Correo |
 |---|---|---|
@@ -388,7 +388,7 @@ Prioridad 4 — Operación Normal
 | Harold A. Ramos Callirgos | Universidad Nacional de Cajamarca | [hramosc23_1@unc.edu.pe](mailto:hramosc23_1@unc.edu.pe) |
 | Witman D. Saldaña Vargas | Universidad Nacional de Cajamarca | [wsaldanav23_1@unc.edu.pe](mailto:wsaldanav23_1@unc.edu.pe) |
 
-### 👨‍🏫 Docente
+### Docente
 
 | Nombre | Universidad | Correo |
 |---|---|---|
