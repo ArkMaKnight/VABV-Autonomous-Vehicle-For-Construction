@@ -10,9 +10,31 @@ class RobotController:
         self.endpoint = os.getenv("ENDPOINT_VIDEO")
         self.is_connected = False
 
+        # Métricas de red
+        self.last_latency_ms = 0
+        self._total_requests = 0
+        self._failed_requests = 0
+        self.rssi_dbm = 0
+
         if not self.base_url or not self.api_key:
             raise ValueError("Instancias no implementadas.")
-        
+
+    @property
+    def packet_loss_percent(self):
+        if self._total_requests == 0:
+            return 0.0
+        return round((self._failed_requests / self._total_requests) * 100, 1)
+
+    def fetch_rssi(self):
+        """Obtiene el RSSI (dBm) del ESP32 vía /status"""
+        try:
+            resp = requests.get(f"{self.base_url}/status", timeout=0.5)
+            if resp.status_code == 200:
+                data = resp.json()
+                self.rssi_dbm = data.get("rssi", 0)
+        except Exception:
+            pass
+
     def _send_background(self, endpoint, command): 
         url = f"{self.base_url}:81/{endpoint}"
         if endpoint == 'control':
@@ -22,19 +44,27 @@ class RobotController:
             "action": command,
             "auth": self.api_key
         }
+        self._total_requests += 1
+        t_start = time.perf_counter()
         try: 
             response = requests.post(url, json = payload, timeout= 0.5)
+            self.last_latency_ms = int((time.perf_counter() - t_start) * 1000)
             if response.status_code == 200:
                 self.is_connected = True
                 print("Ejecución realizada. Correcto")
                 return True
             else: 
+                self._failed_requests += 1
                 print("Ejecución rechazada. ")
                 return False
         except requests.exceptions.Timeout:
+            self._failed_requests += 1
+            self.last_latency_ms = int((time.perf_counter() - t_start) * 1000)
             self.is_connected = False
             print(f"Sin respuesta de robot. {command}")
         except Exception as e: 
+            self._failed_requests += 1
+            self.last_latency_ms = int((time.perf_counter() - t_start) * 1000)
             self.is_connected = False
             print(f"Hubo un error, error detectado: {e}")
         return False

@@ -78,12 +78,17 @@ permission_personal = colorsDetections.gray_color
 msg_output = "NO DETECTADO"
 current_action = "NADA"
 
+# Métricas de rendimiento
+current_fps = 0.0
+reaction_time_ms = 0
+
 def generate_frame(): 
     last_command_sent = ""
     global scan_epp, detect_stop, detect_objects
     global count_people, count_hardhat, count_vest,count_vehicle, count_objects 
     global timeout_person, limit_timeout, timeout_epp
     global msg_output, current_action, count_animals
+    global current_fps, reaction_time_ms
 
 
     count_people = 0
@@ -97,6 +102,8 @@ def generate_frame():
     count_animals = 0
     timeout_person = 0
     timeout_epp = 0
+
+    last_frame_id = -1
 
     while True: 
         # Resetear contadores en cada frame
@@ -118,7 +125,18 @@ def generate_frame():
            print("Esprando vídeo")
            time.sleep(0.8)
            continue
+
+        # Saltar si es el mismo frame (evita procesar duplicados)
+        fid = camera.get_frame_id()
+        if fid == last_frame_id:
+            time.sleep(0.005)
+            continue
+        last_frame_id = fid
+
         frame = cv2.rotate(frame, cv2.ROTATE_180)
+        frame = cv2.flip(frame, 1)
+
+        t_inference_start = time.perf_counter()
         results = model(frame, stream=True, conf=0.5, verbose = False)
 
         for r in results: 
@@ -179,6 +197,7 @@ def generate_frame():
         timeout_person, limit_timeout = logic.test_people(count_people, timeout_person, limit_timeout)
         msg_output, permission_personal, current_action, timeout_epp = logic.test_movement_security(detections ,timeout_epp)        
 
+        # Medir tiempo de reacción: inferencia YOLO + lógica + despacho
         if robot is not None and current_action != last_command_sent and mode_detection:
                 match current_action:
                     case "STOP":
@@ -193,7 +212,12 @@ def generate_frame():
                         robot.turn_right()
                     case "LEFT":
                         robot.turn_left()
+                # Tiempo desde inicio de inferencia hasta despacho del comando
+                reaction_time_ms = int((time.perf_counter() - t_inference_start) * 1000)
                 last_command_sent = current_action
+
+        # FPS real de la cámara ESP32
+        current_fps = camera.real_fps
 
         ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
         if not ret:
@@ -237,7 +261,10 @@ def data_simulated():
                 "animal": animal,
                 "objects": objects,
                 "uptime": get_uptime(),
+                "fps": round(random.uniform(8, 25), 1),
                 "packet_loss": random.randint(0, 5),
+                "rssi": random.randint(-80, -30),
+                "reaction_time": random.randint(5, 50),
                 "msg_output": sim_msg,
                 "current_action": sim_action
             }
@@ -259,14 +286,17 @@ def background_telemetry():
     while True:
         current_time = time.time()
         state_camera = camera is not None and camera.status_connection()
-        state_wheels = robot is not None
+        state_wheels = robot is not None and robot.is_connected
         uptime_seconds = int(current_time - start_time)
         hours, remainder = divmod(uptime_seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
         uptime_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
         
-        latency_ms = int((current_time - last_emit_time) * 1000)
         last_emit_time = current_time
+
+        # Obtener RSSI del ESP32 (no bloquea, se hace en background)
+        if robot is not None:
+            robot.fetch_rssi()
         
         data = {
             "person": count_people,
@@ -277,8 +307,11 @@ def background_telemetry():
             "camera_connected": state_camera,
             "wheels_connected": state_wheels,
             "uptime": uptime_str,
-            "latency": latency_ms,
-            "packet_loss": 0,
+            "fps": current_fps,
+            "latency": robot.last_latency_ms if robot else 0,
+            "packet_loss": robot.packet_loss_percent if robot else 0,
+            "rssi": robot.rssi_dbm if robot else 0,
+            "reaction_time": reaction_time_ms,
             "msg_output": msg_output,
             "current_action": current_action
         }

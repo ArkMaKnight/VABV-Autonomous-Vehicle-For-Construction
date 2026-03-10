@@ -19,7 +19,7 @@
             CONTROL VEHÍCULO AUTÓNOMO EPP
         </span>
         <div class="card-conx">
-            <img src="{{ url_for('static', filename='img/connected_icon.svg') }}" width="12rem">
+            <img src="{{ url_for('static', filename='img/online_icon.svg') }}" width="12rem">
             Conectado
         </div>
         <img src="{{ url_for('static', filename='img/settings_icon.svg') }}" width="50rem">
@@ -121,10 +121,12 @@
         <ul>
             <li class="status-conx"><img id="camera-icon" src="{{ url_for('static', filename='img/offline_icon.svg') }}" width="10px">&nbsp; <span id="camera-status">Conexión Cámara</span></li>
             <li class="status-conx"><img id="wheels-icon" src="{{ url_for('static', filename='img/offline_icon.svg') }}" width="10px">&nbsp;<span id="wheels-status">Conexión Ruedas</span></li>
-            <li class="status-conx"><img src="{{ url_for('static', filename='img/offline_icon.svg') }}" width="10px">&nbsp;<span id="latency-status"></span>Tasa de Frames</li>
+            <li class="status-conx2">FPS: <span id="metric-fps">0</span></li>
             <li class="status-conx2">Tiempo Activo: <span id="metric-uptime">00:00:00</span></li>
             <li class="status-conx2">Latencia: <span id="metric-latency">0</span>ms</li>
             <li class="status-conx2">Pérdida: <span id="metric-loss">0</span>%</li>
+            <li class="status-conx2">RSSI: <span id="metric-rssi">0</span> dBm</li>
+            <li class="status-conx2">T. Reacción: <span id="metric-reaction">0</span>ms</li>
         </ul>
     </div>
 </footer>

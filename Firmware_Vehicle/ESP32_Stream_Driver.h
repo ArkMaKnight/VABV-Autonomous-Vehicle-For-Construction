@@ -66,9 +66,17 @@ static esp_err_t stream_handler(httpd_req_t *req) {
 // Maneja CORS preflight (OPTIONS)
 void handleControlOptions() {
   server.sendHeader("Access-Control-Allow-Origin", "*");
-  server.sendHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  server.sendHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
   server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
   server.send(204);
+}
+
+// Endpoint /status → retorna RSSI y estado
+void handleStatus() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  int rssi = WiFi.RSSI();
+  String json = "{\"rssi\":" + String(rssi) + ",\"ip\":\"" + WiFi.localIP().toString() + "\"}";
+  server.send(200, "application/json", json);
 }
 
 void handleControl() {

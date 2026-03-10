@@ -39,6 +39,7 @@ void iniciarTodoRed() {
   // C) INICIAR CONTROL (Puerto 80)
   server.on("/control", HTTP_POST, handleControl);
   server.on("/control", HTTP_OPTIONS, handleControlOptions);
+  server.on("/status", HTTP_GET, handleStatus);
   server.begin();
   Serial.println("✅ Control OK");
 }

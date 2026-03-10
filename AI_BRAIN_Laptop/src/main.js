@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const uptimeEl = document.getElementById('metric-uptime');
   const latencyEl = document.getElementById('metric-latency');
   const lossEl = document.getElementById('metric-loss');
+  const fpsEl = document.getElementById('metric-fps');
+  const rssiEl = document.getElementById('metric-rssi');
+  const reactionEl = document.getElementById('metric-reaction');
   const cameraIcon = document.getElementById('camera-icon');
   const cameraStatus = document.getElementById('camera-status');
   const wheelsIcon = document.getElementById('wheels-icon');
@@ -51,6 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if(uptimeEl) uptimeEl.textContent = d.uptime || '00:00:00';
   if(latencyEl) latencyEl.textContent = d.latency || 0;
   if(lossEl) lossEl.textContent = d.packet_loss || 0;
+  if(fpsEl) fpsEl.textContent = d.fps || 0;
+  if(rssiEl) rssiEl.textContent = d.rssi || 0;
+  if(reactionEl) reactionEl.textContent = d.reaction_time || 0;
 
   if (cameraIcon && cameraStatus) {
       cameraIcon.src = d.camera_connected ? ICONS.online : ICONS.offline;

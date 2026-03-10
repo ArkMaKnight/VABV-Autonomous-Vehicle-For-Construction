@@ -10,7 +10,11 @@ class ThreadedESP32Camera:
         self.current_frame = None
         self._opened = False
         self._connected = False
-        self._stop = False      
+        self._stop = False
+        self._frame_id = 0
+        self.real_fps = 0.0
+        self._fps_count = 0
+        self._fps_timer = time.perf_counter()
         self.thread = threading.Thread(target=self.update, args=())
         self.thread.daemon = True
         self.thread.start()
@@ -63,6 +67,14 @@ class ThreadedESP32Camera:
                         frame = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
                         if frame is not None: 
                             self.current_frame = frame
+                            self._frame_id += 1
+                            self._fps_count += 1
+                            now = time.perf_counter()
+                            elapsed = now - self._fps_timer
+                            if elapsed >= 1.0:
+                                self.real_fps = round(self._fps_count / elapsed, 1)
+                                self._fps_count = 0
+                                self._fps_timer = now
                     except:
                         pass 
             except Exception as e:
@@ -72,6 +84,9 @@ class ThreadedESP32Camera:
                     
     def read(self):
         return self.current_frame
+
+    def get_frame_id(self):
+        return self._frame_id
     
     def stop(self):
         self._stop = True
