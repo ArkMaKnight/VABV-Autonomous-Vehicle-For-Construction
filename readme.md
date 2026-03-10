@@ -15,6 +15,7 @@
 | **Curso** | Tópicos Especiales en Sistemas Inteligentes |
 | **Código** | 11Q252 |
 | **Universidad** | Universidad Nacional de Cajamarca |
+| **Escuela Profesional** | Escuela Profesional de Ingeniería de Sistemas |
 | **Sede** | Cajamarca, Perú |
 | **Docente** | Nestor E. Muñoz Abanto |
 | **Estudiantes** | David Campos Mines · Carlo F. Díaz Rodríguez · Víctor A. Marín Alcalde · Harold A. Ramos Callirgos · Witman D. Saldaña Vargas |
