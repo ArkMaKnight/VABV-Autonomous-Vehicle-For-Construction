@@ -96,6 +96,7 @@ def generate_frame():
     count_vest = 0
     count_vehicle = 0
     count_stops = 0
+    count_backward = 0
     count_objects = 0
     count_arrow_left = 0
     count_arrow_right = 0
@@ -109,6 +110,7 @@ def generate_frame():
         # Resetear contadores en cada frame
         count_people = 0
         count_hardhat = 0
+        count_backward = 0
         count_stops = 0
         count_vest = 0
         count_vehicle = 0
@@ -177,6 +179,9 @@ def generate_frame():
                     case "arrow_right":
                         count_arrow_right +=1
                         cv2.rectangle(frame, (x1,y1), (x2,y2), colorsDetections.pink_color, 2)
+                    case "backward":
+                        count_backward +=1 
+                        cv2.rectangle(frame, (x1, y1), (x2,y2), colorsDetections.orange_color, 2)
                     case _: 
                         print("Lo siento, clase no especiifcada", currentClass)
 
@@ -188,6 +193,7 @@ def generate_frame():
             'vest': count_vest,
             'vehicle': count_vehicle,
             'animal' : count_animals,
+            'backward': count_backward,
             'stop_sign': count_stops,
             "arrow_left": count_arrow_left,
             "arrow_right": count_arrow_right,
@@ -206,6 +212,8 @@ def generate_frame():
                         robot.alarm_detector()
                     case "FORWARD":
                         robot.forward()
+                    case "BACKWARD":
+                        robot.backward()
                     case "SLOW":
                         robot.slow_speed()
                     case "RIGHT":

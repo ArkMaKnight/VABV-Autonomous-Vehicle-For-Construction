@@ -39,6 +39,7 @@ def test_movement_security(detections, timeout_epp):
     """
     # Extraer conteos del diccionario (si no existe la llave, asume 0)
     person = detections.get('person', 0)
+    backward = detections.get('backward', 0)
     hard_hat = detections.get('hard_hat', 0)
     vest = detections.get('vest', 0)
     animal = detections.get('animal', 0)
@@ -87,6 +88,10 @@ def test_movement_security(detections, timeout_epp):
     if arrow_right > 0:
         print("Señal de DESVÍO: Girando a la DERECHA.")
         return "GIRADO DERECHA", colorsDetections.blue_color, "RIGHT", timeout_epp
+    
+    if backward > 0:
+        print("Señal de DESVÍO. Retrocediendo")
+        return "RETROCEDIENDO", colorsDetections.orange_color, "BACKWARD", timeout_epp
 
     # ==========================================
     # PRIORIDAD 3: CONDICIONES DE LA VÍA (OBSTÁCULOS)
