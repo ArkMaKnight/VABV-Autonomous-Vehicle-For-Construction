@@ -1,4 +1,4 @@
-# Carrito EPP-Core — Vehículo Autónomo de Verificación de EPP
+# Carrito EPP-Core — Vehículo Autónomo de Verificación de EPP Para Construcción
 
 <div align="center">
 
@@ -42,7 +42,7 @@
 
 ## Descripción General
 
-**Carrito EPP-Core** es un sistema de vehículo autónomo inteligente diseñado para entornos industriales, mineros y de construcción. Su objetivo principal es **verificar el uso correcto del Equipo de Protección Personal (EPP)** por parte de los trabajadores, además de navegar de forma segura detectando obstáculos, señales de tráfico y personas.
+**Autonomous Vehicle For Construction (A.K.A Vehículo Autónomo de Baja Velocidad)** es un sistema de vehículo autónomo inteligente diseñado para entornos industriales, mineros y de construcción. Su objetivo principal es **verificar el uso correcto del Equipo de Protección Personal (EPP)** por parte de los trabajadores, además de navegar de forma segura detectando obstáculos, señales de tráfico y personas.
 
 El sistema integra:
 - **Visión por computadora** con YOLOv8 para detección en tiempo real.
@@ -380,5 +380,5 @@ Prioridad 4 — Operación Normal
 
 *Desarrollado como Proyecto Final para el curso **Tópicos Especiales en Sistemas Inteligentes** (11Q252)*  
 *Universidad Nacional de Cajamarca — Cajamarca, Perú*
-
+*Si te gustó y sirvió, da una estrellita al repositorio para apoyar este pequeño prototipo 💖* 
 </div> 
